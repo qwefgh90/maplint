@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="db.WrongObjectName">
+
+    <insert id="InsertStatement1" parameterType="model.Author"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert Author(name)
+        values (#{name})
+    </insert>
+    <insert id="WrongInsertStatement1" parameterType="model.Author"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert Authorr(name)
+        values (#{name})
+    </insert>
+    <insert id="WrongInsertStatement2" parameterType="model.Author"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into Author(namee)
+        values (#{name})
+    </insert>
+
+    <insert id="InsertSelectStatement1" parameterType="model.Author"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert Author(name)
+        select name
+        from Author
+        where name = 'like'
+    </insert>
+
+    <insert id="WrongInsertSelectStatement1" parameterType="model.Author"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert INTO Authorr(name)
+        select name
+        from Author
+        where name = 'like'
+    </insert>
+
+    <insert id="WrongInsertSelectStatement2" parameterType="model.Author"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert Author(name)
+        select name
+        from Authorr
+        where name = 'like'
+    </insert>
+
+    <insert id="WrongInsertSelectStatement3" parameterType="model.Author"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert Author(name)
+        select namee
+        from Author
+        where name = 'like'
+    </insert>
+
+    <insert id="WrongInsertSelectStatement4" parameterType="model.Author"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert Author(name)
+        select name
+        from Author
+        where namee = 'like'
+    </insert>
+
+    <select id="SelectJoinStatement" parameterType="int" resultMap="blogResult">
+        select B.id as id, B.blog_name as blog_name,
+        B.description,
+        B.create_time as create_time,
+        A.id as author_id,
+        A.name as author_name,
+        C.id as content_id,
+        C.blog_id as content_blog_id,
+        C.content as content_content,
+        C.create_time as content_create_time,
+        A.id as content_author_id,
+        A.name as content_author_name
+        from Blog as B
+        left join Author as A on B.author_id = A.id
+        left join Content as C on B.id = C.blog_id
+        where B.author_id = '?' + #{id}
+    </select>
+
+    <select id="WrongSelectStatement1" parameterType="int" resultMap="blogResult">
+        select B.id as id, B.blog_name as blog_name,
+        B.description,
+        B.create_time as create_time,
+        A.id as author_id,
+        A.name as author_name,
+        C.id as content_id,
+        C.blog_id as content_blog_id,
+        C.content as content_content,
+        C.create_time as content_create_time,
+        A.id as content_author_id,
+        A.name as content_author_name
+        from Blogg as B
+        left join Author as A on B.author_id = A.id
+        left join Content as C on B.id = C.blog_id
+        where B.author_id = '?' + #{id}
+    </select>
+
+    <select id="WrongSelectStatement2" parameterType="int" resultMap="blogResult">
+        select B.idd as id, B.blog_name as blog_name,
+        B.description,
+        B.create_time as create_time,
+        A.id as author_id,
+        A.name as author_name,
+        C.id as content_id,
+        C.blog_id as content_blog_id,
+        C.content as content_content,
+        C.create_time as content_create_time,
+        A.id as content_author_id,
+        A.name as content_author_name
+        from Blog as B
+        left join Author as A on B.author_id = A.id
+        left join Content as C on B.id = C.blog_id
+        where B.author_id = '?' + #{id}
+    </select>
+
+
+    <select id="WrongSelectStatement3" parameterType="int" resultMap="blogResult">
+        select B.id as id, B.blog_name as blog_name,
+        B.description,
+        B.create_time as create_time,
+        A.id as author_id,
+        A.name as author_name,
+        C.id as content_id,
+        C.blog_id as content_blog_id,
+        C.content as content_content,
+        C.create_time as content_create_time,
+        A.id as content_author_id,
+        A.name as content_author_name
+        from Blog as BB
+        left join Author as A on B.author_id = A.id
+        left join Content as C on B.id = C.blog_id
+        where B.author_id = '?' + #{id}
+    </select>
+
+    <select id="WrongSelectStatement4" parameterType="int" resultMap="blogResult">
+        select B.id as id, B.blog_name as blog_name,
+        B.description,
+        B.create_time as create_time,
+        A.id as author_id,
+        A.name as author_name,
+        C.id as content_id,
+        C.blog_id as content_blog_id,
+        C.content as content_content,
+        C.create_time as content_create_time,
+        A.id as content_author_id,
+        A.name as content_author_name
+        from Blog as B
+        left join Authorr as A on B.author_id = A.id
+        left join Content as C on B.id = C.blog_id
+        where B.author_id = '?' + #{id}
+    </select>
+
+    <select id="SelectUnionStatement1" parameterType="int" resultMap="blogResult">
+        select B.id as id, B.blog_name as blog_name,
+        B.description,
+        B.create_time as create_time,
+        A.id as author_id,
+        A.name as author_name,
+        C.id as content_id,
+        C.blog_id as content_blog_id,
+        C.content as content_content,
+        C.create_time as content_create_time,
+        A.id as content_author_id,
+        A.name as content_author_name
+        from Blog as B
+        left join Author as A on B.author_id = A.id
+        left join Content as C on B.id = C.blog_id
+        where B.author_id = '?' + #{id}
+        UNION ALL
+        select B.id as id, B.blog_name as blog_name,
+        B.description,
+        B.create_time as create_time,
+        A.id as author_id,
+        A.name as author_name,
+        C.id as content_id,
+        C.blog_id as content_blog_id,
+        C.content as content_content,
+        C.create_time as content_create_time,
+        A.id as content_author_id,
+        A.name as content_author_name
+        from Blog as B
+        left join Author as A on B.author_id = A.id
+        left join Content as C on B.id = C.blog_id
+        where B.author_id = '?' + #{id}
+    </select>
+
+    <select id="WrongSelectUnionStatement1" parameterType="int" resultMap="blogResult">
+        select B.id as id, B.blog_name as blog_name,
+        B.description,
+        B.create_time as create_time,
+        A.id as author_id,
+        A.name as author_name,
+        C.id as content_id,
+        C.blog_id as content_blog_id,
+        C.content as content_content,
+        C.create_time as content_create_time,
+        A.id as content_author_id,
+        A.name as content_author_name
+        from Blogg as B
+        left join Author as A on B.author_id = A.id
+        left join Content as C on B.id = C.blog_id
+        where B.author_id = '?' + #{id}
+        UNION ALL
+        select B.id as id, B.blog_name as blog_name,
+        B.description,
+        B.create_time as create_time,
+        A.id as author_id,
+        A.name as author_name,
+        C.id as content_id,
+        C.blog_id as content_blog_id,
+        C.content as content_content,
+        C.create_time as content_create_time,
+        A.id as content_author_id,
+        A.name as content_author_name
+        from Blog as B
+        left join Author as A on B.author_id = A.id
+        left join Content as C on B.id = C.blog_id
+        where B.author_id = '?' + #{id}
+    </select>
+
+    <select id="SelectIntoStatement1" parameterType="int" resultMap="blogResult">
+        select B.description, B.create_time
+        INTO Blog
+        from Blog as B
+        where B.author_id = #{id}
+    </select>
+
+    <select id="WrongSelectIntoStatement1" parameterType="int" resultMap="blogResult">
+        select B.description, B.create_time
+        INTO Blog
+        from Blogg as B
+        where B.author_id = #{id}
+    </select>
+
+    <select id="WrongSelectIntoStatement2" parameterType="int" resultMap="blogResult">
+        select B.descriptionn, B.create_time
+        INTO Blog
+        from Blog as B
+        where B.author_id = #{id}
+    </select>
+
+    <update id="updateContent1" parameterType="model.Content">
+        update Content set content = #{content}
+        where id = #{id}
+    </update>
+
+    <update id="wrongUpdateContent1" parameterType="model.Content">
+        update Contentt set content = #{content}
+        where id = #{id}
+    </update>
+
+    <update id="wrongUpdateContent2" parameterType="model.Content">
+        update Content set contentt = #{content}
+        where idd = #{id}
+    </update>
+
+    <delete id="deleteContent" parameterType="int">
+        delete from Content
+        where id = #{id}
+    </delete>
+
+    <delete id="wrongDeleteContent1" parameterType="int">
+        delete from Contentt
+        where id = #{id}
+    </delete>
+
+    <delete id="wrongDeleteContent2" parameterType="int">
+        delete from Content
+        where idd = #{id}
+    </delete>
+    
+    <resultMap id="authorResult" type="model.Author">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+    </resultMap>
+
+    <resultMap id="blogResult" type="model.Blog">
+        <id property="id" column="id"/>
+        <result property="blogName" column="blog_name"/>
+        <result property="description" column="description"/>
+        <result property="createTime" column="create_time"/>
+        <association property="author" resultMap="authorResult" columnPrefix="author_"/>
+        <collection property="contents" resultMap="contentResult" columnPrefix="content_"/>
+    </resultMap>
+
+    <resultMap id="contentResult" type="model.Content">
+        <id property="id" column="id"/>
+        <result property="content" column="content"/>
+        <result property="blogId" column="blog_id"/>
+        <result property="createTime" column="create_time"/>
+        <association property="author" resultMap="authorResult" columnPrefix="author_"/>
+    </resultMap>
+
+    <update id="prepared">
+        insert into Author(name)
+        values (?) {1: STRINGDECODE('\ucc3d\uc6d0')}
+    </update>
+    <update id="createTableIfNotExist">
+        DROP TABLE IF EXISTS Author;
+        CREATE TABLE Author (
+        id int NOT NULL AUTO_INCREMENT,
+        name varchar(100) NOT NULL
+        );
+        ALTER TABLE Author ADD PRIMARY KEY (id);
+
+        DROP TABLE IF EXISTS Blog;
+        CREATE TABLE Blog (
+        id int NOT NULL AUTO_INCREMENT,
+        author_id int NOT NULL,
+        blog_name varchar(100) NOT NULL,
+        description varchar(100) NOT NULL,
+        create_time datetime NOT NULL
+        );
+        ALTER TABLE Blog ADD PRIMARY KEY (id);
+        ALTER TABLE Blog ADD FOREIGN KEY (author_id) REFERENCES Author(id);
+
+
+        DROP TABLE IF EXISTS Content;
+        CREATE TABLE Content (
+        id int NOT NULL AUTO_INCREMENT,
+        author_id int NOT NULL,
+        blog_id int NOT NULL,
+        content varchar(100) NOT NULL,
+        create_time datetime NOT NULL
+        );
+        ALTER TABLE Content ADD PRIMARY KEY (id);
+        ALTER TABLE Content ADD FOREIGN KEY (blog_id) REFERENCES Blog(id);
+        ALTER TABLE Content ADD FOREIGN KEY (author_id) REFERENCES Author(id);
+    </update>
+    <update id="createTableIfNotExistSQLite">
+        DROP TABLE IF EXISTS Author;
+        CREATE TABLE Author (
+        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        name varchar(100) NOT NULL
+        );
+
+        DROP TABLE IF EXISTS Blog;
+        CREATE TABLE Blog (
+        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        author_id INTEGER NOT NULL,
+        blog_name varchar(100) NOT NULL,
+        description varchar(100) NOT NULL,
+        create_time datetime NOT NULL,
+        FOREIGN KEY (author_id)
+        REFERENCES Author (id)
+        );
+
+
+        DROP TABLE IF EXISTS Content;
+        CREATE TABLE Content (
+        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        author_id INTEGER NOT NULL,
+        blog_id int NOT NULL,
+        content varchar(100) NOT NULL,
+        create_time datetime NOT NULL,
+        FOREIGN KEY (blog_id)
+        REFERENCES Blog (id),
+        FOREIGN KEY (author_id)
+        REFERENCES Author (id)
+        );
+    </update>
+</mapper>

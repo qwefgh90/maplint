@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="db.ContentMapper">
+    <select id="selectContent" resultType="model.Content">
+        select text, blog_id, title, writer
+        ,id, update_time from Content where id = #{mainContent.id}
+        and writer = #{name}
+    </select>
+    <insert id="insertContent" useGeneratedKeys="true" keyProperty="id">
+        insert into Content(text,blog_id,title,writer)
+        values ('', '', #{title}, #{author})
+    </insert>
+</mapper>
+
+dfr

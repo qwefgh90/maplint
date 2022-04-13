@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="org.h2.Driver"/>
+                <property name="url" value="jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <mapper resource="db/BlogMapper.xml"/>
+        <mapper resource="db/WrongBlogMapper.xml"/>
+        <mapper resource="db/Sample.xml"/>
+        <mapper resource="db/WrongPosition.xml"/>
+        <mapper resource="db/WrongGrammar.xml"/>
+        <mapper resource="db/WrongObjectName.xml"/>
+        <mapper resource="db/WrongPropertyName.xml"/>
+        <mapper resource="db/WrongType.xml"/>
+    </mappers>
+</configuration>
