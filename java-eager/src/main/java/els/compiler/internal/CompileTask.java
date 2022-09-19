@@ -3,7 +3,6 @@ package els.compiler.internal;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.util.Trees;
 import com.sun.tools.javac.api.JavacTaskImpl;
-import els.compiler.Parser;
 import els.project.JavaProject;
 import els.project.SourceFile;
 import org.slf4j.Logger;
@@ -159,10 +158,10 @@ public class CompileTask {
             if (!isValidFileRange(err)) continue;
             var className = errorText(err);
             var packageName = packageName(err);
-            var location = findPackagePrivateClass(packageName, className);
-            if (location != FILE_NOT_FOUND) {
-                addFiles.add(location);
-            }
+//            var location = findPackagePrivateClass(packageName, className);
+//            if (location != FILE_NOT_FOUND) {
+//                addFiles.add(location);
+//            }
         }
         return addFiles;
     }
@@ -190,17 +189,17 @@ public class CompileTask {
 
     private static final Path FILE_NOT_FOUND = Paths.get("");
 
-    private Path findPackagePrivateClass(String packageName, String className) {
-        for (var file : javaProject.getJavaFiles(packageName)) {
-            var parse = Parser.parseFile(file.path);
-            for (var candidate : parse.packagePrivateClasses()) {
-                if (candidate.contentEquals(className)) {
-                    return file.path;
-                }
-            }
-        }
-        return FILE_NOT_FOUND;
-    }
+//    private Path findPackagePrivateClass(String packageName, String className) {
+//        for (var file : javaProject.getJavaFiles(packageName)) {
+//            var parse = Parser.parseFile(file.path);
+//            for (var candidate : parse.packagePrivateClasses()) {
+//                if (candidate.contentEquals(className)) {
+//                    return file.path;
+//                }
+//            }
+//        }
+//        return FILE_NOT_FOUND;
+//    }
 
     private boolean isValidFileRange(Diagnostic<? extends JavaFileObject> d) {
         return d.getSource().toUri().getScheme().equals("file") && d.getStartPosition() >= 0 && d.getEndPosition() >= 0;

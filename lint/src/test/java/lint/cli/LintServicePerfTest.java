@@ -7,6 +7,7 @@ import mybatis.project.ConfigNotFoundException;
 import mybatis.project.MyBatisProjectInitializationException;
 import mybatis.project.MyBatisProjectService;
 import org.apache.ibatis.session.ExecutorType;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,6 +102,7 @@ public class LintServicePerfTest {
      * @throws IOException
      * @throws MyBatisProjectInitializationException
      */
+    @Disabled
     @Test
     void performanceTesting() throws URISyntaxException, SQLException, ConfigNotFoundException, DatabaseObjectNameCheckException, IOException, MyBatisProjectInitializationException {
         setupMyBatisApp();

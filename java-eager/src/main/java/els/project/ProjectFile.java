@@ -1,11 +1,10 @@
 package els.project;
 
-import org.javacs.StringSearch;
-
 import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.regex.Pattern;
 
 public class ProjectFile {
     public final JavaFileObject.Kind fileKind;
@@ -16,10 +15,29 @@ public class ProjectFile {
         this.path = path;
     }
 
+    protected static String packageName(Path file) {
+        var packagePattern = Pattern.compile("^package +([^ ]*);");
+        var startOfClass = Pattern.compile("^[\\w ]*class +\\w+");
+        try (var lines = Files.newBufferedReader(file)) {
+            for (var line = lines.readLine(); line != null; line = lines.readLine()) {
+                if (startOfClass.matcher(line).find()) return "";
+                var matchPackage = packagePattern.matcher(line);
+                if (matchPackage.matches()) {
+                    var id = matchPackage.group(1);
+                    return id;
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        // TODO fall back on parsing file
+        return "";
+    }
+
     public static ProjectFile create(Path path) throws IOException {
         if(isJavaFile(path)) {
             var time = Files.getLastModifiedTime(path).toInstant();
-            var packageName = StringSearch.packageName(path);
+            var packageName = packageName(path);
             return new SourceFile(time, packageName, path);
         }else if(isClassFile(path)){
             return new ProjectFile(JavaFileObject.Kind.CLASS, path);

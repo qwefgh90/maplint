@@ -6,7 +6,7 @@ import els.compiler.internal.CompileTask;
 import els.compiler.internal.InternalCompiler;
 import els.project.JavaProject;
 import els.project.SourceFile;
-import org.javacs.*;
+import els.service.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -33,16 +32,6 @@ public class CompilerService {
     public CompilerService(JavaProject javaProject, CompilerSourceFileManager sourceFileManager) {
         this.sourceFileManager = sourceFileManager;
         this.javaProject = javaProject;
-    }
-
-    public ParseTask parse(Path file) {
-        var parser = Parser.parseFile(file);
-        return new ParseTask(parser.task, parser.root);
-    }
-
-    public ParseTask parse(JavaFileObject file) {
-        var parser = Parser.parseJavaFileObject(file);
-        return new ParseTask(parser.task, parser.root);
     }
 
     public CompileResult compile(Path... files) throws UnexpectedCompileException {
@@ -72,21 +61,6 @@ public class CompilerService {
         }
     }
 
-    public Optional<JavaFileObject> findAnywhere(String className) {
-        var fromDocs = findPublicTypeDeclarationInDocPath(className);
-        if (fromDocs.isPresent()) {
-            return fromDocs;
-        }
-        var fromJdk = findPublicTypeDeclarationInJdk(className);
-        if (fromJdk.isPresent()) {
-            return fromJdk;
-        }
-        var fromSource = fileUserSourceFileObject(className);
-        if (fromSource.isPresent()) {
-            return fromSource.map(m -> (JavaFileObject) m);
-        }
-        return Optional.empty();
-    }
 
     public Optional<SourceFileObject> fileUserSourceFileObject(String className) {
 //        var fastFind = findPath(className);
@@ -96,24 +70,13 @@ public class CompilerService {
         var packageName = packageName(className);
         var simpleName = simpleName(className);
         for (var f : this.javaProject.getJavaFiles(packageName)) {
-            if (containsWord(f.path, simpleName) && containsType(f.path, className)) {
+            if (containsWord(f.path, simpleName) && containsWord(f.path, className)) {
                 return Optional.of(new SourceFileObject(f.path));
             }
         }
         return Optional.empty();
     }
 
-    public Path[] findTypeReferences(String className) {
-        var packageName = packageName(className);
-        var simpleName = simpleName(className);
-        var candidates = new ArrayList<Path>();
-        for (var f : this.javaProject.getJavaFiles()) {
-            if (containsWord(f.path, packageName) && containsImport(f.path, className) && containsWord(f.path, simpleName)) {
-                candidates.add(f.path);
-            }
-        }
-        return candidates.toArray(Path[]::new);
-    }
 
     public Path[] findMemberReferences(String className, String memberName) {
         var candidates = new ArrayList<Path>();
@@ -136,28 +99,7 @@ public class CompilerService {
         }
     }
 
-    public Optional<JavaFileObject> findPublicTypeDeclarationInJdk(String className) {
-        try {
-            for (var module : ScanClassPath.JDK_MODULES) {
-                var moduleLocation = sourceFileManager.getLocationForModule(StandardLocation.MODULE_SOURCE_PATH, module);
-                if (moduleLocation == null) continue;
-                var fromModuleSourcePath =
-                        sourceFileManager.getJavaFileForInput(moduleLocation, className, JavaFileObject.Kind.SOURCE);
-                if (fromModuleSourcePath != null) {
-                    logger.info(String.format("...found %s in module %s of jdk", fromModuleSourcePath.toUri(), module));
-                    return Optional.of(fromModuleSourcePath);
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return Optional.empty();
-    }
 
-    public Iterable<Path> search(String query) {
-        Predicate<SourceFile> test = f -> StringSearch.containsWordMatching(f.path, query);
-        return () -> this.javaProject.getJavaFiles().stream().filter(test).map(f -> f.path).iterator();
-    }
 
     private CompileTask lastCompileTask;
     private Map<JavaFileObject, Long> lastCompileModified = new HashMap<>();
@@ -219,22 +161,26 @@ public class CompilerService {
 
     private boolean containsWord(Path file, String word) {
         if (cacheContainsWord.needs(file, word)) {
-            cacheContainsWord.load(file, word, StringSearch.containsWord(file, word));
+            try {
+                cacheContainsWord.load(file, word, Files.readString(file).contains(word));
+            } catch (IOException e) {
+                return false;
+            }
         }
         return cacheContainsWord.get(file, word);
     }
 
     private static final Cache<Void, List<String>> cacheContainsType = new Cache<>();
-
-    private boolean containsType(Path file, String className) {
-        if (cacheContainsType.needs(file, null)) {
-            var root = parse(file).root;
-            var types = new ArrayList<String>();
-            new FindTypeDeclarations().scan(root, types);
-            cacheContainsType.load(file, null, types);
-        }
-        return cacheContainsType.get(file, null).contains(className);
-    }
+//
+//    private boolean containsType(Path file, String className) {
+//        if (cacheContainsType.needs(file, null)) {
+//            var root = parse(file).root;
+//            var types = new ArrayList<String>();
+//            new FindTypeDeclarations().scan(root, types);
+//            cacheContainsType.load(file, null, types);
+//        }
+//        return cacheContainsType.get(file, null).contains(className);
+//    }
 
     private Cache<Void, List<String>> cacheFileImports = new Cache<>();
 

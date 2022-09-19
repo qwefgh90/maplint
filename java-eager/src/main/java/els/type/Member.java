@@ -1,8 +1,6 @@
 package els.type;
 
 import com.sun.tools.javac.code.Symbol;
-import com.sun.tools.javac.code.Type;
-import org.javacs.lsp.Location;
 
 import java.util.Objects;
 

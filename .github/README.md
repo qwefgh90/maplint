@@ -1,13 +1,15 @@
 ## Maplint
 
 **Maplint** is a lint program to check errors in Mapped SQL Statement.
-It's being developed based on a recent paper that introduces four analysis methods for finding out existence of database objects in statements and wrong parameter notation by accessing the database and using class files during development phase.
+It's being developed based on a recent paper that introduces four analysis methods 
+for finding out various errors in statements. Main concepts are 
+the access to the database and the compilation of Java code during development phase.
 
 ### Project structure
 
 Maplint is a multi-module java project based on Maven.
 
-- java-eager: Project Import, Class Type Finder
+- java-eager: Project Import, Type Finder for Java Class
 - lint: Command Line Interface, MyBatis parser, Diagnostic package
 
 :warning: At some point, java-eager project wil be moved to another repository.
@@ -34,8 +36,8 @@ Maplint is a multi-module java project based on Maven.
 
 ### Background
 
-This project is based on a recent paper related to MyBatis Development Improvement. 
-There are four types of errors that developers often encounters during the project using MyBatis.
+This project is based on a recent paper related to MyBatis Development Productivity Improvement. 
+That paper provides methods following four types of errors that developers often encounters during the project using MyBatis.
 - Grammar Error: Use wrong grammar in SQL Statement
 - Object Name Error: Use wrong names of the table and column in the database
 - Property Name Error: Use wrong property names

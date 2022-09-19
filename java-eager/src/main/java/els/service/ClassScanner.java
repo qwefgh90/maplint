@@ -6,10 +6,6 @@ import com.sun.source.util.Trees;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree;
 import els.type.*;
-import org.javacs.lsp.Location;
-import org.javacs.lsp.Position;
-import org.javacs.lsp.Range;
-import org.javacs.lsp.SymbolKind;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -2,7 +2,6 @@ package els.compiler;
 
 import els.project.JavaProject;
 import els.project.SourceFile;
-import org.javacs.StringSearch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,8 +74,8 @@ public class CompilerSourceFileManager extends ForwardingJavaFileManager<Standar
             throws IOException {
         // javaProject shadows disk
         if (location == StandardLocation.SOURCE_PATH) {
-            var packageName = StringSearch.mostName(className);
-            var simpleName = StringSearch.lastName(className);
+            var packageName = mostName(className);
+            var simpleName = lastName(className);
             for (var f : javaProject.getJavaFiles(packageName)) {
                 if (f.path.getFileName().toString().equals(simpleName + kind.extension)) {
                     return new SourceFileObject(f.path);
@@ -112,4 +111,18 @@ public class CompilerSourceFileManager extends ForwardingJavaFileManager<Standar
     void setLocationFromPaths(Location location, Collection<? extends Path> searchpath) throws IOException {
         fileManager.setLocationFromPaths(location, searchpath);
     }
+
+    // TODO this doesn't work for inner classes, eliminate
+    public static String mostName(String name) {
+        var lastDot = name.lastIndexOf('.');
+        return lastDot == -1 ? "" : name.substring(0, lastDot);
+    }
+
+    // TODO this doesn't work for inner classes, eliminate
+    public static String lastName(String name) {
+        int i = name.lastIndexOf('.');
+        if (i == -1) return name;
+        else return name.substring(i + 1);
+    }
+
 }
