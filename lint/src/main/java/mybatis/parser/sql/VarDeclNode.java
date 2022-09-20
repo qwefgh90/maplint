@@ -13,7 +13,7 @@ public class VarDeclNode implements BaseSqlNode {
     }
 
     @Override
-    public boolean apply(DynamicContextCopy context) {
+    public boolean apply(BaseSqlNodeVisitor context) {
         final Object value = OgnlCache.getValue(expression, context.getBindings());
         context.bind(name, value);
         return true;

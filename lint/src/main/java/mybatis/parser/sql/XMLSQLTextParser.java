@@ -15,6 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * It finds elements of Dynamic SQL.
+ * And it uses DynamicBoundSqlStatementSource if Dynamic SQL is used.
+ * Otherwise, RawBoundSqlStatementSource is used.
+ */
 public class XMLSQLTextParser extends BaseParser {
 
     private final XNode context;

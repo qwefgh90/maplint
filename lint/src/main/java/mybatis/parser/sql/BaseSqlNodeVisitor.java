@@ -11,27 +11,31 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 
-public class DynamicContextCopy extends BaseParser {
+/**
+ * It is forked from DynamicContext
+ * It is a SQL factory by changing DynamicBoundSqlStatementSource
+ */
+public class BaseSqlNodeVisitor extends BaseParser {
     public static final String PARAMETER_OBJECT_KEY = "_parameter";
     public static final String DATABASE_ID_KEY = "_databaseId";
 
     static {
-        OgnlRuntime.setPropertyAccessor(DynamicContextCopy.ContextMap.class, new DynamicContextCopy.ContextAccessor());
+        OgnlRuntime.setPropertyAccessor(BaseSqlNodeVisitor.ContextMap.class, new BaseSqlNodeVisitor.ContextAccessor());
     }
 
-    private final DynamicContextCopy.ContextMap bindings;
+    private final BaseSqlNodeVisitor.ContextMap bindings;
     private final StringJoiner sqlBuilder = new StringJoiner(" ");
     private int uniqueNumber = 0;
 
-    public DynamicContextCopy(Config configuration, Object parameterObject) {
+    public BaseSqlNodeVisitor(Config configuration, Object parameterObject) {
         super(configuration);
         if (parameterObject != null && !(parameterObject instanceof Map)) {
             MetaObject metaObject = configuration.newMetaObject(parameterObject);
             // TODO
             boolean existsTypeHandler = this.immutableTypeHandlerRegistry.hasTypeHandler(parameterObject.getClass());
-            bindings = new DynamicContextCopy.ContextMap(metaObject, existsTypeHandler);
+            bindings = new BaseSqlNodeVisitor.ContextMap(metaObject, existsTypeHandler);
         } else {
-            bindings = new DynamicContextCopy.ContextMap(null, false);
+            bindings = new BaseSqlNodeVisitor.ContextMap(null, false);
         }
         bindings.put(PARAMETER_OBJECT_KEY, parameterObject);
         bindings.put(DATABASE_ID_KEY, configuration.getDatabaseId());

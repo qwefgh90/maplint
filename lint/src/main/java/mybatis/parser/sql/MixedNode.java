@@ -12,7 +12,7 @@ public class MixedNode implements BaseSqlNode{
     }
 
     @Override
-    public boolean apply(DynamicContextCopy context) {
+    public boolean apply(BaseSqlNodeVisitor context) {
         contents.forEach(node -> node.apply(context));
         return true;
     }

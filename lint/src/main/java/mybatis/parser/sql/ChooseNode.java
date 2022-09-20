@@ -12,7 +12,7 @@ public class ChooseNode implements BaseSqlNode {
     }
 
     @Override
-    public boolean apply(DynamicContextCopy context) {
+    public boolean apply(BaseSqlNodeVisitor context) {
         for (BaseSqlNode sqlNode : ifSqlNodes) {
             if (sqlNode.apply(context)) {
                 return true;

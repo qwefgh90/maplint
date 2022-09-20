@@ -15,7 +15,7 @@ public class IfNode implements  BaseSqlNode{
     }
 
     @Override
-    public boolean apply(DynamicContextCopy context) {
+    public boolean apply(BaseSqlNodeVisitor context) {
         if (evaluator.evaluateBoolean(test, context.getBindings())) {
             contents.apply(context);
             return true;

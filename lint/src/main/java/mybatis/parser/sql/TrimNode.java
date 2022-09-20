@@ -27,7 +27,7 @@ public class TrimNode implements BaseSqlNode {
     }
 
     @Override
-    public boolean apply(DynamicContextCopy context) {
+    public boolean apply(BaseSqlNodeVisitor context) {
         TrimNode.FilteredDynamicContext filteredDynamicContext = new FilteredDynamicContext(context);
         boolean result = contents.apply(filteredDynamicContext);
         filteredDynamicContext.applyAll();
@@ -46,13 +46,13 @@ public class TrimNode implements BaseSqlNode {
         return Collections.emptyList();
     }
 
-    private class FilteredDynamicContext extends DynamicContextCopy {
-        private DynamicContextCopy delegate;
+    private class FilteredDynamicContext extends BaseSqlNodeVisitor {
+        private BaseSqlNodeVisitor delegate;
         private boolean prefixApplied;
         private boolean suffixApplied;
         private StringBuilder sqlBuffer;
 
-        public FilteredDynamicContext(DynamicContextCopy delegate) {
+        public FilteredDynamicContext(BaseSqlNodeVisitor delegate) {
             super(TrimNode.this.configuration, null);
             this.delegate = delegate;
             this.prefixApplied = false;

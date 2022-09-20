@@ -30,7 +30,7 @@ public class TextNode implements BaseSqlNode{
     }
 
     @Override
-    public boolean apply(DynamicContextCopy context) {
+    public boolean apply(BaseSqlNodeVisitor context) {
         GenericTokenParser parser = createParser(new TextNode.BindingTokenParser(context, injectionFilter));
         context.appendSql(parser.parse(text));
         return true;
@@ -42,10 +42,10 @@ public class TextNode implements BaseSqlNode{
 
     private static class BindingTokenParser implements TokenHandler {
 
-        private DynamicContextCopy context;
+        private BaseSqlNodeVisitor context;
         private Pattern injectionFilter;
 
-        public BindingTokenParser(DynamicContextCopy context, Pattern injectionFilter) {
+        public BindingTokenParser(BaseSqlNodeVisitor context, Pattern injectionFilter) {
             this.context = context;
             this.injectionFilter = injectionFilter;
         }

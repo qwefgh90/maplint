@@ -4,7 +4,7 @@ import mybatis.parser.model.BoundSqlStatement;
 import mybatis.parser.model.Config;
 import mybatis.parser.model.ParameterMapChild;
 import mybatis.parser.sql.BaseSqlNode;
-import mybatis.parser.sql.DynamicContextCopy;
+import mybatis.parser.sql.BaseSqlNodeVisitor;
 
 import java.util.List;
 
@@ -23,22 +23,22 @@ public class DynamicBoundSqlStatementSource implements BoundSqlStatementSource {
 
     @Override
     public BoundSqlStatement getBoundSql(Object parameterObject) {
-        DynamicContextCopy context = new DynamicContextCopy(configuration, parameterObject);
-        rootSqlNode.apply(context);
-        BoundSqlSourceBuilder sqlStatementBuilder = new BoundSqlSourceBuilder(configuration);
+        BaseSqlNodeVisitor visitor = new BaseSqlNodeVisitor(configuration, parameterObject);
+        rootSqlNode.apply(visitor);
+        BoundSqlStatementSourceBuilder sqlStatementBuilder = new BoundSqlStatementSourceBuilder(configuration);
         Class<?> parameterType = parameterObject == null ? Object.class : parameterObject.getClass();
-        BoundSqlStatementSource sqlSource = sqlStatementBuilder.build(context.getSql(), parameterType.getName(), context.getBindings());
+        BoundSqlStatementSource sqlSource = sqlStatementBuilder.build(visitor.getSql(), parameterType.getName(), visitor.getBindings());
         BoundSqlStatement boundSql = sqlSource.getBoundSql(parameterObject);
-        context.getBindings().forEach(boundSql::setAdditionalParameter);
+        visitor.getBindings().forEach(boundSql::setAdditionalParameter);
         return boundSql;
     }
 
     @Override
     public List<ParameterMapChild> getParameterMappings() {
         Object parameterObject = new Object();
-        DynamicContextCopy context = new DynamicContextCopy(configuration, parameterObject);
+        BaseSqlNodeVisitor context = new BaseSqlNodeVisitor(configuration, parameterObject);
         rootSqlNode.apply(context);
-        BoundSqlSourceBuilder sqlSourceParser = new BoundSqlSourceBuilder(configuration);
+        BoundSqlStatementSourceBuilder sqlSourceParser = new BoundSqlStatementSourceBuilder(configuration);
         Class<?> parameterType = parameterObject == null ? Object.class : parameterObject.getClass();
         BoundSqlStatementSource sqlSource = sqlSourceParser.build(context.getSql(), parameterType.getName(), context.getBindings());
         return sqlSource.getParameterMappings();

@@ -46,7 +46,7 @@ public class ForEachNode implements BaseSqlNode {
     }
 
     @Override
-    public boolean apply(DynamicContextCopy context) {
+    public boolean apply(BaseSqlNodeVisitor context) {
         Map<String, Object> bindings = context.getBindings();
         final Iterable<?> iterable = evaluator.evaluateIterable(collectionExpression, bindings,
                 Optional.ofNullable(nullable).orElseGet(configuration::isNullableOnForEach));
@@ -57,7 +57,7 @@ public class ForEachNode implements BaseSqlNode {
         applyOpen(context);
         int i = 0;
         for (Object o : iterable) {
-            DynamicContextCopy oldContext = context;
+            BaseSqlNodeVisitor oldContext = context;
             if (first || separator == null) {
                 context = new ForEachNode.PrefixedContext(context, "");
             } else {
@@ -87,27 +87,27 @@ public class ForEachNode implements BaseSqlNode {
         return true;
     }
 
-    private void applyIndex(DynamicContextCopy context, Object o, int i) {
+    private void applyIndex(BaseSqlNodeVisitor context, Object o, int i) {
         if (index != null) {
             context.bind(index, o);
             context.bind(itemizeItem(index, i), o);
         }
     }
 
-    private void applyItem(DynamicContextCopy context, Object o, int i) {
+    private void applyItem(BaseSqlNodeVisitor context, Object o, int i) {
         if (item != null) {
             context.bind(item, o);
             context.bind(itemizeItem(item, i), o);
         }
     }
 
-    private void applyOpen(DynamicContextCopy context) {
+    private void applyOpen(BaseSqlNodeVisitor context) {
         if (open != null) {
             context.appendSql(open);
         }
     }
 
-    private void applyClose(DynamicContextCopy context) {
+    private void applyClose(BaseSqlNodeVisitor context) {
         if (close != null) {
             context.appendSql(close);
         }
@@ -117,13 +117,13 @@ public class ForEachNode implements BaseSqlNode {
         return ITEM_PREFIX + item + "_" + i;
     }
 
-    private static class FilteredDynamicContext extends DynamicContextCopy {
-        private final DynamicContextCopy delegate;
+    private static class FilteredDynamicContext extends BaseSqlNodeVisitor {
+        private final BaseSqlNodeVisitor delegate;
         private final int index;
         private final String itemIndex;
         private final String item;
 
-        public FilteredDynamicContext(Config configuration, DynamicContextCopy delegate, String itemIndex, String item, int i) {
+        public FilteredDynamicContext(Config configuration, BaseSqlNodeVisitor delegate, String itemIndex, String item, int i) {
             super(configuration, null);
             this.delegate = delegate;
             this.index = i;
@@ -167,12 +167,12 @@ public class ForEachNode implements BaseSqlNode {
     }
 
 
-    private class PrefixedContext extends DynamicContextCopy {
-        private final DynamicContextCopy delegate;
+    private class PrefixedContext extends BaseSqlNodeVisitor {
+        private final BaseSqlNodeVisitor delegate;
         private final String prefix;
         private boolean prefixApplied;
 
-        public PrefixedContext(DynamicContextCopy delegate, String prefix) {
+        public PrefixedContext(BaseSqlNodeVisitor delegate, String prefix) {
             super(ForEachNode.this.configuration, null);
             this.delegate = delegate;
             this.prefix = prefix;

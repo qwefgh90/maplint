@@ -8,7 +8,7 @@ public class StaticTextNode implements BaseSqlNode {
     }
 
     @Override
-    public boolean apply(DynamicContextCopy context) {
+    public boolean apply(BaseSqlNodeVisitor context) {
         context.appendSql(text);
         return true;
     }

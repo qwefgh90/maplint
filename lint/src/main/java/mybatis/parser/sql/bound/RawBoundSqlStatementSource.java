@@ -4,7 +4,7 @@ import mybatis.parser.model.BoundSqlStatement;
 import mybatis.parser.model.Config;
 import mybatis.parser.model.ParameterMapChild;
 import mybatis.parser.sql.BaseSqlNode;
-import mybatis.parser.sql.DynamicContextCopy;
+import mybatis.parser.sql.BaseSqlNodeVisitor;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,12 +17,12 @@ public class RawBoundSqlStatementSource implements BoundSqlStatementSource {
     }
 
     public RawBoundSqlStatementSource(Config configuration, String sql, String parameterType) {
-        BoundSqlSourceBuilder sqlSourceBuilder = new BoundSqlSourceBuilder(configuration);
+        BoundSqlStatementSourceBuilder sqlSourceBuilder = new BoundSqlStatementSourceBuilder(configuration);
         internalSqlSource = sqlSourceBuilder.build(sql, parameterType, new HashMap<>());
     }
 
     private static String getSql(Config configuration, BaseSqlNode rootSqlNode) {
-        DynamicContextCopy context = new DynamicContextCopy(configuration, null);
+        BaseSqlNodeVisitor context = new BaseSqlNodeVisitor(configuration, null);
         rootSqlNode.apply(context);
         return context.getSql();
     }

@@ -4,7 +4,6 @@ import com.sun.tools.javac.code.Type;
 import mybatis.parser.BaseParser;
 import mybatis.parser.GenericTokenParser;
 import mybatis.parser.TokenHandler;
-import mybatis.parser.keygen.ParameterMappingSignatureGenerator;
 import mybatis.parser.model.Config;
 import mybatis.parser.model.NotationToken;
 import mybatis.parser.model.ParameterMapChild;
@@ -23,16 +22,15 @@ import java.util.*;
 /**
  * It's forked from SqlSourceBuilder.
  */
-public class BoundSqlSourceBuilder extends BaseParser {
+public class BoundSqlStatementSourceBuilder extends BaseParser {
     private static final String PARAMETER_PROPERTIES = "javaType,jdbcType,mode,numericScale,resultMap,typeHandler,jdbcTypeName";
 
-    public BoundSqlSourceBuilder(Config configuration) {
+    public BoundSqlStatementSourceBuilder(Config configuration) {
         super(configuration);
     }
 
     public StaticBoundSqlStatementSource build(String originalSql, String parameterType, Map<String, Object> additionalParameters) {
-//        var signature = ParameterMappingSignatureGenerator.generateNumberSignature(originalSql);
-        BoundSqlSourceBuilder.ParameterMappingTokenHandler handler = new BoundSqlSourceBuilder.ParameterMappingTokenHandler(configuration, parameterType, additionalParameters);
+        BoundSqlStatementSourceBuilder.ParameterMappingTokenHandler handler = new BoundSqlStatementSourceBuilder.ParameterMappingTokenHandler(configuration, parameterType, additionalParameters);
         GenericTokenParser parser = new GenericTokenParser("#{", "}", handler);
         String sql;
         if (configuration.isShrinkWhitespacesInSql()) {
@@ -40,7 +38,7 @@ public class BoundSqlSourceBuilder extends BaseParser {
         } else {
             sql = parser.parse(originalSql);
         }
-        sql = sql + String.format("\n--%s", String.join(",", parser.getUniqueIdList())); // add the signature at the last line.
+        sql = sql + String.format("\n--%s", String.join(",", parser.getUniqueIdList())); // add a list of unique ids at the last line.
         return new StaticBoundSqlStatementSource(configuration, sql, handler.getParameterMappings());
     }
 
@@ -63,8 +61,6 @@ public class BoundSqlSourceBuilder extends BaseParser {
         Logger logger = LoggerFactory.getLogger(ParameterMappingTokenHandler.class);
         private final List<ParameterMapChild> parameterMappings = new ArrayList<>();
         private final String parameterType;
-//        private final String signature;
-//        private final MetaObject metaParameters;
 
         public ParameterMappingTokenHandler(Config configuration, String parameterType, Map<String, Object> additionalParameters) {
             super(configuration);
@@ -105,7 +101,6 @@ public class BoundSqlSourceBuilder extends BaseParser {
             } catch (Exception e) {
                 throw new RuntimeException(String.format("An exception occurs while handling %s", notation.getToken().toLowerCase(Locale.ROOT)));
             }
-//            return "?";
         }
 
         private String generateUniqueId(int idLength, List<String> reservedList, String body) throws Exception {
