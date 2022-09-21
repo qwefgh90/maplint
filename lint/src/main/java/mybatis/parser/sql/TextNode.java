@@ -8,7 +8,7 @@ import org.apache.ibatis.type.SimpleTypeRegistry;
 
 import java.util.regex.Pattern;
 
-public class TextNode implements BaseSqlNode{
+public class TextNode implements SqlNode {
 
     private final String text;
     private final Pattern injectionFilter;
@@ -30,9 +30,9 @@ public class TextNode implements BaseSqlNode{
     }
 
     @Override
-    public boolean apply(BaseSqlNodeVisitor context) {
-        GenericTokenParser parser = createParser(new TextNode.BindingTokenParser(context, injectionFilter));
-        context.appendSql(parser.parse(text));
+    public boolean apply(SqlNodeVisitor visitor) {
+        GenericTokenParser parser = createParser(new TextNode.BindingTokenParser(visitor, injectionFilter));
+        visitor.appendSql(parser.parse(text));
         return true;
     }
 
@@ -42,10 +42,10 @@ public class TextNode implements BaseSqlNode{
 
     private static class BindingTokenParser implements TokenHandler {
 
-        private BaseSqlNodeVisitor context;
+        private SqlNodeVisitor context;
         private Pattern injectionFilter;
 
-        public BindingTokenParser(BaseSqlNodeVisitor context, Pattern injectionFilter) {
+        public BindingTokenParser(SqlNodeVisitor context, Pattern injectionFilter) {
             this.context = context;
             this.injectionFilter = injectionFilter;
         }

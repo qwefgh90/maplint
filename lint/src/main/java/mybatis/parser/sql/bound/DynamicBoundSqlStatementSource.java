@@ -3,8 +3,8 @@ package mybatis.parser.sql.bound;
 import mybatis.parser.model.BoundSqlStatement;
 import mybatis.parser.model.Config;
 import mybatis.parser.model.ParameterMapChild;
-import mybatis.parser.sql.BaseSqlNode;
-import mybatis.parser.sql.BaseSqlNodeVisitor;
+import mybatis.parser.sql.SqlNode;
+import mybatis.parser.sql.SqlNodeVisitor;
 
 import java.util.List;
 
@@ -14,16 +14,16 @@ import java.util.List;
 public class DynamicBoundSqlStatementSource implements BoundSqlStatementSource {
 
     private final Config configuration;
-    private final BaseSqlNode rootSqlNode;
+    private final SqlNode rootSqlNode;
 
-    public DynamicBoundSqlStatementSource(Config configuration, BaseSqlNode rootSqlNode) {
+    public DynamicBoundSqlStatementSource(Config configuration, SqlNode rootSqlNode) {
         this.configuration = configuration;
         this.rootSqlNode = rootSqlNode;
     }
 
     @Override
     public BoundSqlStatement getBoundSql(Object parameterObject) {
-        BaseSqlNodeVisitor visitor = new BaseSqlNodeVisitor(configuration, parameterObject);
+        SqlNodeVisitor visitor = new SqlNodeVisitor(configuration, parameterObject);
         rootSqlNode.apply(visitor);
         BoundSqlStatementSourceBuilder sqlStatementBuilder = new BoundSqlStatementSourceBuilder(configuration);
         Class<?> parameterType = parameterObject == null ? Object.class : parameterObject.getClass();
@@ -36,7 +36,7 @@ public class DynamicBoundSqlStatementSource implements BoundSqlStatementSource {
     @Override
     public List<ParameterMapChild> getParameterMappings() {
         Object parameterObject = new Object();
-        BaseSqlNodeVisitor context = new BaseSqlNodeVisitor(configuration, parameterObject);
+        SqlNodeVisitor context = new SqlNodeVisitor(configuration, parameterObject);
         rootSqlNode.apply(context);
         BoundSqlStatementSourceBuilder sqlSourceParser = new BoundSqlStatementSourceBuilder(configuration);
         Class<?> parameterType = parameterObject == null ? Object.class : parameterObject.getClass();

@@ -15,27 +15,27 @@ import java.util.StringJoiner;
  * It is forked from DynamicContext
  * It is a SQL factory by changing DynamicBoundSqlStatementSource
  */
-public class BaseSqlNodeVisitor extends BaseParser {
+public class SqlNodeVisitor extends BaseParser {
     public static final String PARAMETER_OBJECT_KEY = "_parameter";
     public static final String DATABASE_ID_KEY = "_databaseId";
 
     static {
-        OgnlRuntime.setPropertyAccessor(BaseSqlNodeVisitor.ContextMap.class, new BaseSqlNodeVisitor.ContextAccessor());
+        OgnlRuntime.setPropertyAccessor(SqlNodeVisitor.ContextMap.class, new SqlNodeVisitor.ContextAccessor());
     }
 
-    private final BaseSqlNodeVisitor.ContextMap bindings;
+    private final SqlNodeVisitor.ContextMap bindings;
     private final StringJoiner sqlBuilder = new StringJoiner(" ");
     private int uniqueNumber = 0;
 
-    public BaseSqlNodeVisitor(Config configuration, Object parameterObject) {
+    public SqlNodeVisitor(Config configuration, Object parameterObject) {
         super(configuration);
         if (parameterObject != null && !(parameterObject instanceof Map)) {
             MetaObject metaObject = configuration.newMetaObject(parameterObject);
             // TODO
             boolean existsTypeHandler = this.immutableTypeHandlerRegistry.hasTypeHandler(parameterObject.getClass());
-            bindings = new BaseSqlNodeVisitor.ContextMap(metaObject, existsTypeHandler);
+            bindings = new SqlNodeVisitor.ContextMap(metaObject, existsTypeHandler);
         } else {
-            bindings = new BaseSqlNodeVisitor.ContextMap(null, false);
+            bindings = new SqlNodeVisitor.ContextMap(null, false);
         }
         bindings.put(PARAMETER_OBJECT_KEY, parameterObject);
         bindings.put(DATABASE_ID_KEY, configuration.getDatabaseId());

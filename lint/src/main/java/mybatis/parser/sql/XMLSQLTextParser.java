@@ -62,7 +62,7 @@ public class XMLSQLTextParser extends BaseParser {
     }
 
     protected MixedNode parseDynamicTags(XNode node) {
-        List<BaseSqlNode> contents = new ArrayList<>();
+        List<SqlNode> contents = new ArrayList<>();
         NodeList children = node.getNode().getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
             XNode child = node.newXNode(children.item(i));
@@ -89,7 +89,7 @@ public class XMLSQLTextParser extends BaseParser {
     }
 
     private interface NodeHandler {
-        void handleNode(XNode nodeToHandle, List<BaseSqlNode> targetContents);
+        void handleNode(XNode nodeToHandle, List<SqlNode> targetContents);
     }
 
     private class BindHandler implements XMLSQLTextParser.NodeHandler {
@@ -98,7 +98,7 @@ public class XMLSQLTextParser extends BaseParser {
         }
 
         @Override
-        public void handleNode(XNode nodeToHandle, List<BaseSqlNode> targetContents) {
+        public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
             final String name = nodeToHandle.getStringAttribute("name");
             final String expression = nodeToHandle.getStringAttribute("value");
             final VarDeclNode node = new VarDeclNode(name, expression);
@@ -112,7 +112,7 @@ public class XMLSQLTextParser extends BaseParser {
         }
 
         @Override
-        public void handleNode(XNode nodeToHandle, List<BaseSqlNode> targetContents) {
+        public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
             MixedNode mixedSqlNode = parseDynamicTags(nodeToHandle);
             String prefix = nodeToHandle.getStringAttribute("prefix");
             String prefixOverrides = nodeToHandle.getStringAttribute("prefixOverrides");
@@ -129,7 +129,7 @@ public class XMLSQLTextParser extends BaseParser {
         }
 
         @Override
-        public void handleNode(XNode nodeToHandle, List<BaseSqlNode> targetContents) {
+        public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
             MixedNode mixedSqlNode = parseDynamicTags(nodeToHandle);
             WhereNode where = new WhereNode(configuration, mixedSqlNode);
             targetContents.add(where);
@@ -142,7 +142,7 @@ public class XMLSQLTextParser extends BaseParser {
         }
 
         @Override
-        public void handleNode(XNode nodeToHandle, List<BaseSqlNode> targetContents) {
+        public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
             MixedNode mixedSqlNode = parseDynamicTags(nodeToHandle);
             SetNode set = new SetNode(configuration, mixedSqlNode);
             targetContents.add(set);
@@ -155,7 +155,7 @@ public class XMLSQLTextParser extends BaseParser {
         }
 
         @Override
-        public void handleNode(XNode nodeToHandle, List<BaseSqlNode> targetContents) {
+        public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
             MixedNode mixedSqlNode = parseDynamicTags(nodeToHandle);
             String collection = nodeToHandle.getStringAttribute("collection");
             Boolean nullable = nodeToHandle.getBooleanAttribute("nullable");
@@ -175,7 +175,7 @@ public class XMLSQLTextParser extends BaseParser {
         }
 
         @Override
-        public void handleNode(XNode nodeToHandle, List<BaseSqlNode> targetContents) {
+        public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
             MixedNode mixedSqlNode = parseDynamicTags(nodeToHandle);
             String test = nodeToHandle.getStringAttribute("test");
             IfNode ifSqlNode = new IfNode(mixedSqlNode, test);
@@ -189,7 +189,7 @@ public class XMLSQLTextParser extends BaseParser {
         }
 
         @Override
-        public void handleNode(XNode nodeToHandle, List<BaseSqlNode> targetContents) {
+        public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
             MixedNode mixedSqlNode = parseDynamicTags(nodeToHandle);
             targetContents.add(mixedSqlNode);
         }
@@ -201,16 +201,16 @@ public class XMLSQLTextParser extends BaseParser {
         }
 
         @Override
-        public void handleNode(XNode nodeToHandle, List<BaseSqlNode> targetContents) {
-            List<BaseSqlNode> whenSqlNodes = new ArrayList<>();
-            List<BaseSqlNode> otherwiseSqlNodes = new ArrayList<>();
+        public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
+            List<SqlNode> whenSqlNodes = new ArrayList<>();
+            List<SqlNode> otherwiseSqlNodes = new ArrayList<>();
             handleWhenOtherwiseNodes(nodeToHandle, whenSqlNodes, otherwiseSqlNodes);
-            BaseSqlNode defaultSqlNode = getDefaultSqlNode(otherwiseSqlNodes);
+            SqlNode defaultSqlNode = getDefaultSqlNode(otherwiseSqlNodes);
             ChooseNode chooseSqlNode = new ChooseNode(whenSqlNodes, defaultSqlNode);
             targetContents.add(chooseSqlNode);
         }
 
-        private void handleWhenOtherwiseNodes(XNode chooseSqlNode, List<BaseSqlNode> ifSqlNodes, List<BaseSqlNode> defaultSqlNodes) {
+        private void handleWhenOtherwiseNodes(XNode chooseSqlNode, List<SqlNode> ifSqlNodes, List<SqlNode> defaultSqlNodes) {
             List<XNode> children = chooseSqlNode.getChildren();
             for (XNode child : children) {
                 String nodeName = child.getNode().getNodeName();
@@ -223,8 +223,8 @@ public class XMLSQLTextParser extends BaseParser {
             }
         }
 
-        private BaseSqlNode getDefaultSqlNode(List<BaseSqlNode> defaultSqlNodes) {
-            BaseSqlNode defaultSqlNode = null;
+        private SqlNode getDefaultSqlNode(List<SqlNode> defaultSqlNodes) {
+            SqlNode defaultSqlNode = null;
             if (defaultSqlNodes.size() == 1) {
                 defaultSqlNode = defaultSqlNodes.get(0);
             } else if (defaultSqlNodes.size() > 1) {

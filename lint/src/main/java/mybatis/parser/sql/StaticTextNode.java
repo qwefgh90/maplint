@@ -1,6 +1,6 @@
 package mybatis.parser.sql;
 
-public class StaticTextNode implements BaseSqlNode {
+public class StaticTextNode implements SqlNode {
     private final String text;
 
     public StaticTextNode(String text) {
@@ -8,8 +8,8 @@ public class StaticTextNode implements BaseSqlNode {
     }
 
     @Override
-    public boolean apply(BaseSqlNodeVisitor context) {
-        context.appendSql(text);
+    public boolean apply(SqlNodeVisitor visitor) {
+        visitor.appendSql(text);
         return true;
     }
 }

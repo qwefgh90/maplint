@@ -1,9 +1,11 @@
 package mybatis.parser;
 
+import mybatis.parser.location.LocationAnnotator;
+import mybatis.parser.location.LocationData;
+import mybatis.parser.model.Config;
 import mybatis.parser.model.DataSourceConfig;
 import mybatis.parser.model.Environment;
 import mybatis.parser.model.TransactionManager;
-import mybatis.parser.model.Config;
 import mybatis.project.MyBatisProjectService;
 import mybatis.type.jtj.TypeResolver;
 import org.apache.ibatis.builder.BuilderException;
@@ -21,7 +23,21 @@ import org.apache.ibatis.reflection.ReflectorFactory;
 import org.apache.ibatis.session.*;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.type.JdbcType;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.events.EventTarget;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
+import javax.xml.parsers.*;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.sax.SAXSource;
+import java.io.File;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -64,6 +80,7 @@ public class XMLConfigParser extends BaseParser {
         parseConfiguration(parser.evalNode("/configuration"));
         return configuration;
     }
+
 
     private void parseConfiguration(XNode root) {
         try {

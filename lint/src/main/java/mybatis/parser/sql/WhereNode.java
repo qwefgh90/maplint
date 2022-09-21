@@ -9,7 +9,7 @@ public class WhereNode extends TrimNode {
 
     private static List<String> prefixList = Arrays.asList("AND ","OR ","AND\n", "OR\n", "AND\r", "OR\r", "AND\t", "OR\t");
 
-    public WhereNode(Config configuration, BaseSqlNode contents) {
+    public WhereNode(Config configuration, SqlNode contents) {
         super(configuration, contents, "WHERE", prefixList, null, null);
     }
 }

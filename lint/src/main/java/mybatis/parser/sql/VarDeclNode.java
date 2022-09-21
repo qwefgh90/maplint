@@ -2,7 +2,7 @@ package mybatis.parser.sql;
 
 import org.apache.ibatis.scripting.xmltags.OgnlCache;
 
-public class VarDeclNode implements BaseSqlNode {
+public class VarDeclNode implements SqlNode {
 
     private final String name;
     private final String expression;
@@ -13,9 +13,9 @@ public class VarDeclNode implements BaseSqlNode {
     }
 
     @Override
-    public boolean apply(BaseSqlNodeVisitor context) {
-        final Object value = OgnlCache.getValue(expression, context.getBindings());
-        context.bind(name, value);
+    public boolean apply(SqlNodeVisitor visitor) {
+        final Object value = OgnlCache.getValue(expression, visitor.getBindings());
+        visitor.bind(name, value);
         return true;
     }
 }

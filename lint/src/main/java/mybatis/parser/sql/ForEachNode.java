@@ -7,13 +7,13 @@ import org.apache.ibatis.scripting.xmltags.ExpressionEvaluator;
 import java.util.Map;
 import java.util.Optional;
 
-public class ForEachNode implements BaseSqlNode {
+public class ForEachNode implements SqlNode {
     public static final String ITEM_PREFIX = "__frch_";
 
     private final ExpressionEvaluator evaluator;
     private final String collectionExpression;
     private final Boolean nullable;
-    private final BaseSqlNode contents;
+    private final SqlNode contents;
     private final String open;
     private final String close;
     private final String separator;
@@ -25,14 +25,14 @@ public class ForEachNode implements BaseSqlNode {
 //     * @deprecated Since 3.5.9, use the {@link #ForEachNode(Configuration, BaseSqlNode, String, Boolean, String, String, String, String, String)}.
 //     */
     @Deprecated
-    public ForEachNode(Config configuration, BaseSqlNode contents, String collectionExpression, String index, String item, String open, String close, String separator) {
+    public ForEachNode(Config configuration, SqlNode contents, String collectionExpression, String index, String item, String open, String close, String separator) {
         this(configuration, contents, collectionExpression, null, index, item, open, close, separator);
     }
 
     /**
      * @since 3.5.9
      */
-    public ForEachNode(Config configuration, BaseSqlNode contents, String collectionExpression, Boolean nullable, String index, String item, String open, String close, String separator) {
+    public ForEachNode(Config configuration, SqlNode contents, String collectionExpression, Boolean nullable, String index, String item, String open, String close, String separator) {
         this.evaluator = new ExpressionEvaluator();
         this.collectionExpression = collectionExpression;
         this.nullable = nullable;
@@ -46,68 +46,68 @@ public class ForEachNode implements BaseSqlNode {
     }
 
     @Override
-    public boolean apply(BaseSqlNodeVisitor context) {
-        Map<String, Object> bindings = context.getBindings();
+    public boolean apply(SqlNodeVisitor visitor) {
+        Map<String, Object> bindings = visitor.getBindings();
         final Iterable<?> iterable = evaluator.evaluateIterable(collectionExpression, bindings,
                 Optional.ofNullable(nullable).orElseGet(configuration::isNullableOnForEach));
         if (iterable == null || !iterable.iterator().hasNext()) {
             return true;
         }
         boolean first = true;
-        applyOpen(context);
+        applyOpen(visitor);
         int i = 0;
         for (Object o : iterable) {
-            BaseSqlNodeVisitor oldContext = context;
+            SqlNodeVisitor oldContext = visitor;
             if (first || separator == null) {
-                context = new ForEachNode.PrefixedContext(context, "");
+                visitor = new ForEachNode.PrefixedContext(visitor, "");
             } else {
-                context = new ForEachNode.PrefixedContext(context, separator);
+                visitor = new ForEachNode.PrefixedContext(visitor, separator);
             }
-            int uniqueNumber = context.getUniqueNumber();
+            int uniqueNumber = visitor.getUniqueNumber();
             // Issue #709
             if (o instanceof Map.Entry) {
                 @SuppressWarnings("unchecked")
                 Map.Entry<Object, Object> mapEntry = (Map.Entry<Object, Object>) o;
-                applyIndex(context, mapEntry.getKey(), uniqueNumber);
-                applyItem(context, mapEntry.getValue(), uniqueNumber);
+                applyIndex(visitor, mapEntry.getKey(), uniqueNumber);
+                applyItem(visitor, mapEntry.getValue(), uniqueNumber);
             } else {
-                applyIndex(context, i, uniqueNumber);
-                applyItem(context, o, uniqueNumber);
+                applyIndex(visitor, i, uniqueNumber);
+                applyItem(visitor, o, uniqueNumber);
             }
-            contents.apply(new ForEachNode.FilteredDynamicContext(configuration, context, index, item, uniqueNumber));
+            contents.apply(new ForEachNode.FilteredDynamicContext(configuration, visitor, index, item, uniqueNumber));
             if (first) {
-                first = !((ForEachNode.PrefixedContext) context).isPrefixApplied();
+                first = !((ForEachNode.PrefixedContext) visitor).isPrefixApplied();
             }
-            context = oldContext;
+            visitor = oldContext;
             i++;
         }
-        applyClose(context);
-        context.getBindings().remove(item);
-        context.getBindings().remove(index);
+        applyClose(visitor);
+        visitor.getBindings().remove(item);
+        visitor.getBindings().remove(index);
         return true;
     }
 
-    private void applyIndex(BaseSqlNodeVisitor context, Object o, int i) {
+    private void applyIndex(SqlNodeVisitor context, Object o, int i) {
         if (index != null) {
             context.bind(index, o);
             context.bind(itemizeItem(index, i), o);
         }
     }
 
-    private void applyItem(BaseSqlNodeVisitor context, Object o, int i) {
+    private void applyItem(SqlNodeVisitor context, Object o, int i) {
         if (item != null) {
             context.bind(item, o);
             context.bind(itemizeItem(item, i), o);
         }
     }
 
-    private void applyOpen(BaseSqlNodeVisitor context) {
+    private void applyOpen(SqlNodeVisitor context) {
         if (open != null) {
             context.appendSql(open);
         }
     }
 
-    private void applyClose(BaseSqlNodeVisitor context) {
+    private void applyClose(SqlNodeVisitor context) {
         if (close != null) {
             context.appendSql(close);
         }
@@ -117,13 +117,13 @@ public class ForEachNode implements BaseSqlNode {
         return ITEM_PREFIX + item + "_" + i;
     }
 
-    private static class FilteredDynamicContext extends BaseSqlNodeVisitor {
-        private final BaseSqlNodeVisitor delegate;
+    private static class FilteredDynamicContext extends SqlNodeVisitor {
+        private final SqlNodeVisitor delegate;
         private final int index;
         private final String itemIndex;
         private final String item;
 
-        public FilteredDynamicContext(Config configuration, BaseSqlNodeVisitor delegate, String itemIndex, String item, int i) {
+        public FilteredDynamicContext(Config configuration, SqlNodeVisitor delegate, String itemIndex, String item, int i) {
             super(configuration, null);
             this.delegate = delegate;
             this.index = i;
@@ -167,12 +167,12 @@ public class ForEachNode implements BaseSqlNode {
     }
 
 
-    private class PrefixedContext extends BaseSqlNodeVisitor {
-        private final BaseSqlNodeVisitor delegate;
+    private class PrefixedContext extends SqlNodeVisitor {
+        private final SqlNodeVisitor delegate;
         private final String prefix;
         private boolean prefixApplied;
 
-        public PrefixedContext(BaseSqlNodeVisitor delegate, String prefix) {
+        public PrefixedContext(SqlNodeVisitor delegate, String prefix) {
             super(ForEachNode.this.configuration, null);
             this.delegate = delegate;
             this.prefix = prefix;

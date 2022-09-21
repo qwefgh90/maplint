@@ -4,20 +4,20 @@ import mybatis.parser.model.Config;
 
 import java.util.*;
 
-public class TrimNode implements BaseSqlNode {
+public class TrimNode implements SqlNode {
 
-    private final BaseSqlNode contents;
+    private final SqlNode contents;
     private final String prefix;
     private final String suffix;
     private final List<String> prefixesToOverride;
     private final List<String> suffixesToOverride;
     private final Config configuration;
 
-    public TrimNode(Config configuration, BaseSqlNode contents, String prefix, String prefixesToOverride, String suffix, String suffixesToOverride) {
+    public TrimNode(Config configuration, SqlNode contents, String prefix, String prefixesToOverride, String suffix, String suffixesToOverride) {
         this(configuration, contents, prefix, parseOverrides(prefixesToOverride), suffix, parseOverrides(suffixesToOverride));
     }
 
-    protected TrimNode(Config configuration, BaseSqlNode contents, String prefix, List<String> prefixesToOverride, String suffix, List<String> suffixesToOverride) {
+    protected TrimNode(Config configuration, SqlNode contents, String prefix, List<String> prefixesToOverride, String suffix, List<String> suffixesToOverride) {
         this.contents = contents;
         this.prefix = prefix;
         this.prefixesToOverride = prefixesToOverride;
@@ -27,8 +27,8 @@ public class TrimNode implements BaseSqlNode {
     }
 
     @Override
-    public boolean apply(BaseSqlNodeVisitor context) {
-        TrimNode.FilteredDynamicContext filteredDynamicContext = new FilteredDynamicContext(context);
+    public boolean apply(SqlNodeVisitor visitor) {
+        TrimNode.FilteredDynamicContext filteredDynamicContext = new FilteredDynamicContext(visitor);
         boolean result = contents.apply(filteredDynamicContext);
         filteredDynamicContext.applyAll();
         return result;
@@ -46,13 +46,13 @@ public class TrimNode implements BaseSqlNode {
         return Collections.emptyList();
     }
 
-    private class FilteredDynamicContext extends BaseSqlNodeVisitor {
-        private BaseSqlNodeVisitor delegate;
+    private class FilteredDynamicContext extends SqlNodeVisitor {
+        private SqlNodeVisitor delegate;
         private boolean prefixApplied;
         private boolean suffixApplied;
         private StringBuilder sqlBuffer;
 
-        public FilteredDynamicContext(BaseSqlNodeVisitor delegate) {
+        public FilteredDynamicContext(SqlNodeVisitor delegate) {
             super(TrimNode.this.configuration, null);
             this.delegate = delegate;
             this.prefixApplied = false;

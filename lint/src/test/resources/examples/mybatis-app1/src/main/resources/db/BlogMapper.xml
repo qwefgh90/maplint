@@ -20,7 +20,7 @@
     </insert>
 
     <select id="selectAuthor" resultType="model.Author">
-        select id, name from Author <where> 1 = 1</where>
+        select id, name from Author <where> <if test="name != null">1 = 1</if> </where>
 
     </select>
         <select id="selectBlog" resultMap="blogResult">

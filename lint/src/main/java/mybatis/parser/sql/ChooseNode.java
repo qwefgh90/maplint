@@ -2,24 +2,24 @@ package mybatis.parser.sql;
 
 import java.util.List;
 
-public class ChooseNode implements BaseSqlNode {
-    private final BaseSqlNode defaultSqlNode;
-    private final List<BaseSqlNode> ifSqlNodes;
+public class ChooseNode implements SqlNode {
+    private final SqlNode defaultSqlNode;
+    private final List<SqlNode> ifSqlNodes;
 
-    public ChooseNode(List<BaseSqlNode> ifSqlNodes, BaseSqlNode defaultSqlNode) {
+    public ChooseNode(List<SqlNode> ifSqlNodes, SqlNode defaultSqlNode) {
         this.ifSqlNodes = ifSqlNodes;
         this.defaultSqlNode = defaultSqlNode;
     }
 
     @Override
-    public boolean apply(BaseSqlNodeVisitor context) {
-        for (BaseSqlNode sqlNode : ifSqlNodes) {
-            if (sqlNode.apply(context)) {
+    public boolean apply(SqlNodeVisitor visitor) {
+        for (SqlNode sqlNode : ifSqlNodes) {
+            if (sqlNode.apply(visitor)) {
                 return true;
             }
         }
         if (defaultSqlNode != null) {
-            defaultSqlNode.apply(context);
+            defaultSqlNode.apply(visitor);
             return true;
         }
         return false;
