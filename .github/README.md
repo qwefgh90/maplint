@@ -34,6 +34,14 @@ Maplint is a multi-module java project based on Maven.
 
 :warning: This lint is designed based on MyBatis 3.5.9 and JDK 13. It will be tested and upgraded to support more versions of JDK and up-to-date MyBatis.
 
+
+### Getting started
+
+This project doesn't support CLI yet. It's been planned.
+Currently, uou can only run Unit Testing in Intellij for each submodule.
+
+![img.png](img.png)
+
 ### Background
 
 This project is based on a recent paper related to MyBatis Development Productivity Improvement. 
