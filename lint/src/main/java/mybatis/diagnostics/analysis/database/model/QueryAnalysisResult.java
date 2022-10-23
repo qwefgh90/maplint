@@ -1,4 +1,4 @@
-package mybatis.diagnostics.analysis.jdbc.model;
+package mybatis.diagnostics.analysis.database.model;
 
 import net.sf.jsqlparser.parser.ASTNodeAccess;
 import net.sf.jsqlparser.util.validation.metadata.Named;
@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 /**
  * @author qwefgh90
  */
-public class JDBCMetadata {
-    public JDBCMetadata(Map<Named, NamedJDBCType> objectTypeMap, Map<Named, Boolean> results, Map<Named, List<ASTNodeAccess>> columnNodeMap) {
+public class QueryAnalysisResult {
+    public QueryAnalysisResult(Map<Named, NamedJDBCType> objectTypeMap, Map<Named, Boolean> results, Map<Named, List<ASTNodeAccess>> columnNodeMap) {
         this.columnTypeMap = objectTypeMap;
         this.columnExistMap = results;
         this.columnNodeMap = columnNodeMap;
@@ -32,6 +32,24 @@ public class JDBCMetadata {
     }
     public Map<Named, NamedJDBCType> getColumnTypeMap() {
         return columnTypeMap;
+    }
+
+    /**
+     * Return the type of the named object
+     * @param named
+     * @return
+     */
+    public NamedJDBCType getType(Named named){
+        return columnTypeMap.get(named);
+    }
+
+    /**
+     * Check if the named object exists
+     * @param named
+     * @return
+     */
+    public Boolean exists(Named named){
+        return columnExistMap.get(named);
     }
 
     @Override

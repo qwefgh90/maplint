@@ -1,6 +1,6 @@
-package mybatis.diagnostics.analysis.jdbc;
+package mybatis.diagnostics.analysis.database;
 
-import mybatis.diagnostics.analysis.jdbc.model.NamedJDBCType;
+import mybatis.diagnostics.analysis.database.model.NamedJDBCType;
 import mybatis.diagnostics.analysis.base.AdditionalContextKey;
 import net.sf.jsqlparser.parser.ASTNodeAccess;
 import net.sf.jsqlparser.util.validation.UnexpectedValidationException;
@@ -20,12 +20,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class DatabaseMetadataCollectCapability extends JdbcDatabaseMetaDataCapability {
-    private static final Logger LOG = Logger.getLogger(DatabaseMetadataCollectCapability.class.getName());
+/**
+ * Collect the metadata of the statement
+ */
+public class DatabaseMetadataCollector extends JdbcDatabaseMetaDataCapability {
+    private static final Logger LOG = Logger.getLogger(DatabaseMetadataCollector.class.getName());
     protected Map<Named, NamedJDBCType> columnTypeMap = new HashMap<>();
     protected Map<Named, List<ASTNodeAccess>> columnNodeMap = new HashMap<>();
 
-    public DatabaseMetadataCollectCapability(Connection connection, UnaryOperator<String> namesLookup) {
+    public DatabaseMetadataCollector(Connection connection, UnaryOperator<String> namesLookup) {
         super(connection, namesLookup, true);
     }
 

@@ -1,4 +1,4 @@
-package mybatis.diagnostics.analysis.structure.visitor;
+package mybatis.diagnostics.analysis.tree.visitor;
 
 import mybatis.diagnostics.analysis.base.AdditionalContextKey;
 import net.sf.jsqlparser.parser.ASTNodeAccess;

@@ -1,6 +1,6 @@
 package mybatis.diagnostics.model.error;
 
-import mybatis.diagnostics.analysis.jdbc.model.SourcePosition;
+import mybatis.diagnostics.analysis.database.model.SourcePosition;
 import net.sf.jsqlparser.parser.ASTNodeAccess;
 import net.sf.jsqlparser.util.validation.metadata.Named;
 

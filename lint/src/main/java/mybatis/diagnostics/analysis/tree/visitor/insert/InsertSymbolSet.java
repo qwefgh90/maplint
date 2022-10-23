@@ -1,6 +1,6 @@
-package mybatis.diagnostics.analysis.structure.visitor.insert;
+package mybatis.diagnostics.analysis.tree.visitor.insert;
 
-import mybatis.diagnostics.analysis.structure.visitor.StatementSymbolSet;
+import mybatis.diagnostics.analysis.tree.visitor.StatementSymbolSet;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.parser.ASTNodeAccess;

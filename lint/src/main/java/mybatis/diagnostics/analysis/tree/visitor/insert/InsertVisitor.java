@@ -1,9 +1,8 @@
-package mybatis.diagnostics.analysis.structure.visitor.insert;
+package mybatis.diagnostics.analysis.tree.visitor.insert;
 
-import mybatis.diagnostics.analysis.structure.visitor.ASTNodeCollector;
-import mybatis.diagnostics.analysis.structure.visitor.DefaultContextProvider;
+import mybatis.diagnostics.analysis.tree.visitor.ASTNodeCollector;
+import mybatis.diagnostics.analysis.tree.visitor.DefaultContextProvider;
 import mybatis.diagnostics.analysis.base.Insert.ModifiedInsertValidator;
-import mybatis.diagnostics.analysis.structure.visitor.select.BinaryExpressionVisitor;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.schema.Column;

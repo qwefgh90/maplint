@@ -109,7 +109,7 @@ public class LintServicePerfTest {
         LintService lintService = new LintService();
         var root = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/mybatis-app1").toURI()).normalize();
         var lintReportList = new ArrayList<LintReport>();
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < 1; i++) {
             lintReportList.add(lintService.lint(LintOption.LintOptionBuilder.aLintOption(root).configFileName("h2-perf").build()));
         }
         var builderMap = new HashMap<String, AverageElapsedTimeBuilder>();

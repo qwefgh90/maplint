@@ -1,4 +1,4 @@
-package mybatis.diagnostics.analysis.structure.visitor;
+package mybatis.diagnostics.analysis.tree.visitor;
 
 import net.sf.jsqlparser.parser.feature.FeatureConfiguration;
 import net.sf.jsqlparser.util.validation.ValidationCapability;

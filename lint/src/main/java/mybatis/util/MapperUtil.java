@@ -1,7 +1,5 @@
 package mybatis.util;
 
-import mybatis.diagnostics.analysis.jdbc.model.SourcePosition;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

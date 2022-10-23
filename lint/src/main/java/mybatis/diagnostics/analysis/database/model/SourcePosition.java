@@ -1,6 +1,5 @@
-package mybatis.diagnostics.analysis.jdbc.model;
+package mybatis.diagnostics.analysis.database.model;
 
-import mybatis.parser.model.ParameterMapChild;
 import net.sf.jsqlparser.parser.ASTNodeAccess;
 
 import java.util.regex.Pattern;

@@ -1,14 +1,14 @@
 package mybatis.diagnostics;
 
-import mybatis.diagnostics.analysis.jdbc.JDBCAnalysisService;
-import mybatis.diagnostics.analysis.jdbc.model.NamedJDBCType;
-import mybatis.diagnostics.analysis.structure.StructureAnalysisService;
-import mybatis.diagnostics.analysis.structure.visitor.DefaultContextProvider;
-import mybatis.diagnostics.analysis.structure.visitor.StatementSymbolSet;
-import mybatis.diagnostics.analysis.structure.visitor.delete.DeleteSymbolSet;
-import mybatis.diagnostics.analysis.structure.visitor.insert.InsertSymbolSet;
-import mybatis.diagnostics.analysis.structure.visitor.select.SelectSymbolSet;
-import mybatis.diagnostics.analysis.structure.visitor.update.UpdateSymbolSet;
+import mybatis.diagnostics.analysis.database.QueryAnalysisService;
+import mybatis.diagnostics.analysis.database.model.NamedJDBCType;
+import mybatis.diagnostics.analysis.tree.StructureAnalysisService;
+import mybatis.diagnostics.analysis.tree.visitor.DefaultContextProvider;
+import mybatis.diagnostics.analysis.tree.visitor.StatementSymbolSet;
+import mybatis.diagnostics.analysis.tree.visitor.delete.DeleteSymbolSet;
+import mybatis.diagnostics.analysis.tree.visitor.insert.InsertSymbolSet;
+import mybatis.diagnostics.analysis.tree.visitor.select.SelectSymbolSet;
+import mybatis.diagnostics.analysis.tree.visitor.update.UpdateSymbolSet;
 import mybatis.diagnostics.event.GroupEvent;
 import mybatis.diagnostics.event.TextEvent;
 import mybatis.diagnostics.exception.DatabaseObjectNameCheckException;
@@ -74,8 +74,8 @@ public class MapperStatementDiagnostics {
         var executableSqlWithSignature = statement.getBoundSql(new HashMap<>()).toString();
         var executableSql = MapperUtil.trimSignature(executableSqlWithSignature);
         try (var connection = statement.getConfiguration().getConnection()) {
-            var meta = JDBCAnalysisService.getMetadata(connection, executableSql);
-            var structureMeta = StructureAnalysisService.getSymbol(StructureAnalysisService.parseStatement(executableSql));
+            var meta = QueryAnalysisService.analyze(connection, executableSql);
+            var structureMeta = StructureAnalysisService.getSymbolSet(StructureAnalysisService.parseStatement(executableSql));
             Map<Named, List<ASTNodeAccess>> map = structureMeta.getColumnNodeMap();
             meta.getColumnExistMap().forEach((key, value) -> {
                 if (!value) {
@@ -145,9 +145,9 @@ public class MapperStatementDiagnostics {
         StatementSymbolSet symbolSet = null;
         try (var connection = statement.getConfiguration().getConnection()) {
             eventGroup.log(new TextEvent(context, String.format("Extracting column information...")));
-            var meta = JDBCAnalysisService.getMetadata(connection, executableSql);
+            var meta = QueryAnalysisService.analyze(connection, executableSql);
             columnTypeMap = meta.getColumnTypeMap();
-            symbolSet = StructureAnalysisService.getSymbol(StructureAnalysisService.parseStatement(executableSql));
+            symbolSet = StructureAnalysisService.getSymbolSet(StructureAnalysisService.parseStatement(executableSql));
         } catch (SQLException | JSQLParserException e) {
             eventGroup.log(new TextEvent(context, String.format("An exception occurs: %s", e.toString())));
             eventGroup.log(new TextEvent(context, String.format("There is no available map for column types.")));

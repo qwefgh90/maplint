@@ -1,7 +1,7 @@
-package mybatis.diagnostics.analysis.jdbc;
+package mybatis.diagnostics.analysis.database;
 
-import mybatis.diagnostics.analysis.jdbc.model.JDBCMetadata;
-import mybatis.diagnostics.analysis.structure.StructureAnalysisService;
+import mybatis.diagnostics.analysis.database.model.QueryAnalysisResult;
+import mybatis.diagnostics.analysis.tree.StructureAnalysisService;
 import mybatis.diagnostics.analysis.base.Insert.ModifiedInsertValidator;
 import mybatis.diagnostics.analysis.base.delete.ModifiedDeleteValidator;
 import mybatis.diagnostics.analysis.base.select.ModifiedSelectValidator;
@@ -20,13 +20,14 @@ import java.util.Arrays;
 
 /**
  * @author qwefgh90
+ *
  */
-public class JDBCAnalysisService {
-    public static JDBCMetadata getMetadata(Connection connection, String executableSql) throws JSQLParserException {
+public class QueryAnalysisService {
+    public static QueryAnalysisResult analyze(Connection connection, String executableSql) throws JSQLParserException {
         var statement = StructureAnalysisService.parseStatement(executableSql);
-        var databaseMetadataCollectCapability = new DatabaseMetadataCollectCapability(connection, NamesLookup.UPPERCASE);
+        var databaseMetadataCollector = new DatabaseMetadataCollector(connection, NamesLookup.UPPERCASE);
         ValidationContext context = new ValidationContext();
-        context.setCapabilities(Arrays.asList(databaseMetadataCollectCapability));
+        context.setCapabilities(Arrays.asList(databaseMetadataCollector));
         context.setConfiguration(new FeatureConfiguration());
         if(statement instanceof Select) {
             var select = (Select)statement;
@@ -49,6 +50,6 @@ public class JDBCAnalysisService {
             validator.setContext(context);
             validator.validate(delete);
         }
-        return new JDBCMetadata(databaseMetadataCollectCapability.getColumnTypeMap(), databaseMetadataCollectCapability.getExistMap(), databaseMetadataCollectCapability.getColumnNodeMap());
+        return new QueryAnalysisResult(databaseMetadataCollector.getColumnTypeMap(), databaseMetadataCollector.getExistMap(), databaseMetadataCollector.getColumnNodeMap());
     }
 }

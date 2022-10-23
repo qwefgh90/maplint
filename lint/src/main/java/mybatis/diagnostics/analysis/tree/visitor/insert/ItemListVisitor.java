@@ -1,4 +1,4 @@
-package mybatis.diagnostics.analysis.structure.visitor.insert;
+package mybatis.diagnostics.analysis.tree.visitor.insert;
 
 import mybatis.diagnostics.analysis.base.select.ModifiedItemsListValidator;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;

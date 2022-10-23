@@ -1,4 +1,4 @@
-package mybatis.diagnostics.analysis.jdbc.model;
+package mybatis.diagnostics.analysis.database.model;
 
 import java.sql.JDBCType;
 

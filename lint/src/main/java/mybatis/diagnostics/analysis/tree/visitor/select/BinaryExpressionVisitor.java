@@ -1,6 +1,6 @@
-package mybatis.diagnostics.analysis.structure.visitor.select;
+package mybatis.diagnostics.analysis.tree.visitor.select;
 
-import mybatis.diagnostics.analysis.structure.visitor.DefaultContextProvider;
+import mybatis.diagnostics.analysis.tree.visitor.DefaultContextProvider;
 import mybatis.diagnostics.analysis.base.select.ModifiedExpressionValidator;
 import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.operators.relational.*;

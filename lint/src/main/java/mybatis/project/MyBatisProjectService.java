@@ -40,7 +40,7 @@ public class MyBatisProjectService {
         if(configPath.isPresent()){
             resourceSystem = new ExternalResourceSystem(javaProject);
             this.configFile = configPath.get().path;
-        }else // TODO Clean resources?
+        }else // TODO this code at the wrong position. Clean resources?
             throw new ConfigNotFoundException(root.toString());
     }
 

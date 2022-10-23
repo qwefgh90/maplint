@@ -1,4 +1,4 @@
-package mybatis.diagnostics.analysis.structure.expression;
+package mybatis.diagnostics.analysis.tree.expression;
 
 import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.Expression;

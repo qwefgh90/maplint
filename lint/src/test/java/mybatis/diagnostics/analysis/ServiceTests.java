@@ -1,7 +1,7 @@
 package mybatis.diagnostics.analysis;
 
-import mybatis.diagnostics.analysis.jdbc.JDBCAnalysisService;
-import mybatis.diagnostics.analysis.structure.StructureAnalysisService;
+import mybatis.diagnostics.analysis.database.QueryAnalysisService;
+import mybatis.diagnostics.analysis.tree.StructureAnalysisService;
 import mybatis.parser.XMLConfigParser;
 import mybatis.parser.model.Config;
 import mybatis.project.ConfigNotFoundException;
@@ -79,10 +79,10 @@ public class ServiceTests {
 //        Validation validation = new Validation(Arrays.asList(typeCollectCapability), executableSql);
 //        List<ValidationError> errors = validation.validate();
 //        logger.debug(typeCollectCapability.getColumnTypeMap().toString());
-        var meta = JDBCAnalysisService.getMetadata(connection, executableSql);
+        var meta = QueryAnalysisService.analyze(connection, executableSql);
         logger.debug(meta.toString());
 
-        var symbolSet = StructureAnalysisService.getSymbol((Select) StructureAnalysisService.parseStatement(executableSql));
+        var symbolSet = StructureAnalysisService.getSymbolSet((Select) StructureAnalysisService.parseStatement(executableSql));
         logger.debug(symbolSet.toString());
     }
 
@@ -103,10 +103,10 @@ public class ServiceTests {
 //        Validation validation = new Validation(Arrays.asList(typeCollectCapability), executableSql);
 //        List<ValidationError> errors = validation.validate();
 //        logger.debug(typeCollectCapability.getColumnTypeMap().toString());
-        var meta = JDBCAnalysisService.getMetadata(connection, executableSql);
+        var meta = QueryAnalysisService.analyze(connection, executableSql);
         logger.debug(meta.toString());
 
-        var symbolSet = StructureAnalysisService.getSymbol((Select) StructureAnalysisService.parseStatement(executableSql));
+        var symbolSet = StructureAnalysisService.getSymbolSet((Select) StructureAnalysisService.parseStatement(executableSql));
         logger.debug(symbolSet.toString());
     }
 
@@ -133,10 +133,10 @@ public class ServiceTests {
 //        var databaseMetadataCollectCapability = new DatabaseMetadataCollectCapability(connection, NamesLookup.UPPERCASE);
 //        Validation validation = new Validation(Arrays.asList(databaseMetadataCollectCapability), executableSql);
 //        List<ValidationError> errors = validation.validate();
-        var meta = JDBCAnalysisService.getMetadata(connection, executableSql);
+        var meta = QueryAnalysisService.analyze(connection, executableSql);
         logger.debug(meta.toString());
 
-        var symbolSet = StructureAnalysisService.getSymbol((Insert) StructureAnalysisService.parseStatement(executableSql));
+        var symbolSet = StructureAnalysisService.getSymbolSet((Insert) StructureAnalysisService.parseStatement(executableSql));
         logger.debug(symbolSet.toString());
     }
 
@@ -157,10 +157,10 @@ public class ServiceTests {
 //        Validation validation = new Validation(Arrays.asList(namedObjectVisitor), executableSql);
 //        List<ValidationError> errors = validation.validate();
 //        logger.debug(namedObjectVisitor.getColumnTypeMap().toString());
-        var meta = JDBCAnalysisService.getMetadata(connection, executableSql);
+        var meta = QueryAnalysisService.analyze(connection, executableSql);
         logger.debug(meta.toString());
 
-        var symbolSet = StructureAnalysisService.getSymbol((Update) StructureAnalysisService.parseStatement(executableSql));
+        var symbolSet = StructureAnalysisService.getSymbolSet((Update) StructureAnalysisService.parseStatement(executableSql));
         logger.debug(symbolSet.toString());
     }
 
@@ -181,10 +181,10 @@ public class ServiceTests {
 //        Validation validation = new Validation(Arrays.asList(namedObjectVisitor), executableSql);
 //        List<ValidationError> errors = validation.validate();
 //        logger.debug(namedObjectVisitor.getColumnTypeMap().toString());
-        var meta = JDBCAnalysisService.getMetadata(connection, executableSql);
+        var meta = QueryAnalysisService.analyze(connection, executableSql);
         logger.debug(meta.toString());
 
-        var symbolSet = StructureAnalysisService.getSymbol((Delete) StructureAnalysisService.parseStatement(executableSql));
+        var symbolSet = StructureAnalysisService.getSymbolSet((Delete) StructureAnalysisService.parseStatement(executableSql));
         logger.debug(symbolSet.toString());
     }
 }

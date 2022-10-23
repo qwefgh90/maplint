@@ -1,7 +1,6 @@
-package mybatis.diagnostics.analysis.structure.visitor;
+package mybatis.diagnostics.analysis.tree.visitor;
 
-import mybatis.diagnostics.analysis.jdbc.model.JDBCMetadata;
-import mybatis.diagnostics.analysis.jdbc.model.SourcePosition;
+import mybatis.diagnostics.analysis.database.model.SourcePosition;
 import net.sf.jsqlparser.parser.ASTNodeAccess;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.util.validation.metadata.Named;

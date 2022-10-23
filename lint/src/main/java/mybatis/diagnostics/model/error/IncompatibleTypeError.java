@@ -1,6 +1,6 @@
 package mybatis.diagnostics.model.error;
 
-import mybatis.diagnostics.analysis.jdbc.model.SourcePosition;
+import mybatis.diagnostics.analysis.database.model.SourcePosition;
 import mybatis.diagnostics.model.context.Context;
 import mybatis.diagnostics.model.error.base.Error;
 import mybatis.parser.model.MapperStatement;

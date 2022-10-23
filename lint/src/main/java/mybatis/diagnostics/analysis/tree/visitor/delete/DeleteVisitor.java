@@ -1,8 +1,8 @@
-package mybatis.diagnostics.analysis.structure.visitor.delete;
+package mybatis.diagnostics.analysis.tree.visitor.delete;
 
-import mybatis.diagnostics.analysis.structure.visitor.ASTNodeCollector;
-import mybatis.diagnostics.analysis.structure.visitor.DefaultContextProvider;
-import mybatis.diagnostics.analysis.structure.visitor.select.BinaryExpressionVisitor;
+import mybatis.diagnostics.analysis.tree.visitor.ASTNodeCollector;
+import mybatis.diagnostics.analysis.tree.visitor.DefaultContextProvider;
+import mybatis.diagnostics.analysis.tree.visitor.select.BinaryExpressionVisitor;
 import mybatis.diagnostics.analysis.base.delete.ModifiedDeleteValidator;
 import mybatis.diagnostics.analysis.base.select.ModifiedExpressionValidator;
 import net.sf.jsqlparser.expression.Expression;

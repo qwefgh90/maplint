@@ -1,9 +1,9 @@
-package mybatis.diagnostics.analysis.structure.visitor;
+package mybatis.diagnostics.analysis.tree.visitor;
 
-import mybatis.diagnostics.analysis.structure.visitor.delete.DeleteVisitor;
-import mybatis.diagnostics.analysis.structure.visitor.insert.InsertVisitor;
-import mybatis.diagnostics.analysis.structure.visitor.select.SelectVisitor;
-import mybatis.diagnostics.analysis.structure.visitor.update.UpdateVisitor;
+import mybatis.diagnostics.analysis.tree.visitor.delete.DeleteVisitor;
+import mybatis.diagnostics.analysis.tree.visitor.insert.InsertVisitor;
+import mybatis.diagnostics.analysis.tree.visitor.select.SelectVisitor;
+import mybatis.diagnostics.analysis.tree.visitor.update.UpdateVisitor;
 import net.sf.jsqlparser.parser.feature.Feature;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;

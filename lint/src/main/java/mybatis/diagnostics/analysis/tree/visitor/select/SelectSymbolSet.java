@@ -1,7 +1,7 @@
-package mybatis.diagnostics.analysis.structure.visitor.select;
+package mybatis.diagnostics.analysis.tree.visitor.select;
 
-import mybatis.diagnostics.analysis.structure.expression.ExpressionFactory;
-import mybatis.diagnostics.analysis.structure.visitor.StatementSymbolSet;
+import mybatis.diagnostics.analysis.tree.expression.ExpressionFactory;
+import mybatis.diagnostics.analysis.tree.visitor.StatementSymbolSet;
 import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.parser.ASTNodeAccess;
 import net.sf.jsqlparser.statement.select.Select;

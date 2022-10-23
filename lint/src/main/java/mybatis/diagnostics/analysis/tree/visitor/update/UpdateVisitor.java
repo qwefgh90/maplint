@@ -1,32 +1,36 @@
-package mybatis.diagnostics.analysis.structure.visitor.select;
+package mybatis.diagnostics.analysis.tree.visitor.update;
 
-import mybatis.diagnostics.analysis.structure.visitor.ASTNodeCollector;
-import mybatis.diagnostics.analysis.structure.visitor.DefaultContextProvider;
+import mybatis.diagnostics.analysis.tree.visitor.ASTNodeCollector;
+import mybatis.diagnostics.analysis.tree.visitor.DefaultContextProvider;
+import mybatis.diagnostics.analysis.tree.visitor.select.BinaryExpressionVisitor;
 import mybatis.diagnostics.analysis.base.select.ModifiedExpressionValidator;
-import mybatis.diagnostics.analysis.base.select.ModifiedSelectValidator;
+import mybatis.diagnostics.analysis.base.update.ModifiedUpdateValidator;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.MultiExpressionList;
-import net.sf.jsqlparser.statement.select.PlainSelect;
-import net.sf.jsqlparser.statement.select.Select;
-import net.sf.jsqlparser.statement.select.SelectItem;
+import net.sf.jsqlparser.statement.update.Update;
+import net.sf.jsqlparser.statement.update.UpdateSet;
 
 import java.util.List;
 import java.util.function.Supplier;
 
-public class SelectVisitor extends ModifiedSelectValidator implements DefaultContextProvider, Supplier<SelectSymbolSet> {
-    public SelectVisitor() {
+public class UpdateVisitor extends ModifiedUpdateValidator implements DefaultContextProvider, Supplier<UpdateSymbolSet> {
+    public UpdateVisitor() {
         this.setContext(createValidationContext(astNodeCollector));
         expressionCollector = getValidator(BinaryExpressionVisitor.class);
     }
 
-    protected Select select;
-    protected List<SelectItem> selectItems;
+    protected Update update;
+    protected List<UpdateSet> updateSetList;
     protected BinaryExpressionVisitor expressionCollector;
     protected ASTNodeCollector astNodeCollector = new ASTNodeCollector();
 
-    public void setSelect(Select select) {
-        this.select = select;
+    public List<UpdateSet> getUpdateSetList() {
+        return updateSetList;
+    }
+
+    public BinaryExpressionVisitor getExpressionCollector() {
+        return expressionCollector;
     }
 
     @Override
@@ -49,18 +53,16 @@ public class SelectVisitor extends ModifiedSelectValidator implements DefaultCon
     }
 
     @Override
-    public void visit(PlainSelect plainSelect) {
-        selectItems = plainSelect.getSelectItems();
-        super.visit(plainSelect);
+    public void validate(Update update) {
+        this.update = update;
+        updateSetList = update.getUpdateSets();
+        super.validate(update);
     }
 
     @Override
-    public SelectSymbolSet get() {
-        if(selectItems != null) {
-            return new SelectSymbolSet(selectItems, expressionCollector.getBinaryExpressions(), select, astNodeCollector.getColumnNodeMap());
-        }
+    public UpdateSymbolSet get() {
+        if(updateSetList != null)
+            return new UpdateSymbolSet(updateSetList, expressionCollector.getBinaryExpressions(), update, astNodeCollector.getColumnNodeMap());
         return null;
     }
-
-
 }
