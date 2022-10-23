@@ -1,6 +1,6 @@
 package mybatis.diagnostics.model.error;
 
-import mybatis.diagnostics.analysis.database.model.SourcePosition;
+import sql.analysis.util.SourcePosition;
 import mybatis.parser.model.ParameterMapChild;
 
 import java.util.regex.Pattern;

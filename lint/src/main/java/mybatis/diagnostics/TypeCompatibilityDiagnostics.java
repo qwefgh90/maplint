@@ -1,7 +1,7 @@
 package mybatis.diagnostics;
 
-import mybatis.diagnostics.analysis.database.model.NamedJDBCType;
-import mybatis.diagnostics.analysis.tree.expression.ColumnValueExpression;
+import sql.analysis.database.model.NamedJDBCType;
+import sql.analysis.tree.expression.ColumnValueExpression;
 import mybatis.diagnostics.event.GroupEvent;
 import mybatis.diagnostics.event.TextEvent;
 import mybatis.diagnostics.model.DiagnosticSource;

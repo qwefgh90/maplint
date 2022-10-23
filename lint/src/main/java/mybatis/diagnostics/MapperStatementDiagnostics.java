@@ -1,14 +1,13 @@
 package mybatis.diagnostics;
 
-import mybatis.diagnostics.analysis.database.QueryAnalysisService;
-import mybatis.diagnostics.analysis.database.model.NamedJDBCType;
-import mybatis.diagnostics.analysis.tree.StructureAnalysisService;
-import mybatis.diagnostics.analysis.tree.visitor.DefaultContextProvider;
-import mybatis.diagnostics.analysis.tree.visitor.StatementSymbolSet;
-import mybatis.diagnostics.analysis.tree.visitor.delete.DeleteSymbolSet;
-import mybatis.diagnostics.analysis.tree.visitor.insert.InsertSymbolSet;
-import mybatis.diagnostics.analysis.tree.visitor.select.SelectSymbolSet;
-import mybatis.diagnostics.analysis.tree.visitor.update.UpdateSymbolSet;
+import sql.analysis.SQLAnalysisService;
+import sql.analysis.database.model.NamedJDBCType;
+import sql.analysis.tree.visitor.DefaultContextProvider;
+import sql.analysis.tree.model.SQLStructuralData;
+import sql.analysis.tree.model.DeleteStructuralData;
+import sql.analysis.tree.model.InsertStructuralData;
+import sql.analysis.tree.model.SelectStructuralData;
+import sql.analysis.tree.model.UpdateStructuralData;
 import mybatis.diagnostics.event.GroupEvent;
 import mybatis.diagnostics.event.TextEvent;
 import mybatis.diagnostics.exception.DatabaseObjectNameCheckException;
@@ -74,8 +73,8 @@ public class MapperStatementDiagnostics {
         var executableSqlWithSignature = statement.getBoundSql(new HashMap<>()).toString();
         var executableSql = MapperUtil.trimSignature(executableSqlWithSignature);
         try (var connection = statement.getConfiguration().getConnection()) {
-            var meta = QueryAnalysisService.analyze(connection, executableSql);
-            var structureMeta = StructureAnalysisService.getSymbolSet(StructureAnalysisService.parseStatement(executableSql));
+            var meta = SQLAnalysisService.analyze(connection, executableSql);
+            var structureMeta = SQLAnalysisService.getSymbolSet(SQLAnalysisService.parseStatement(executableSql));
             Map<Named, List<ASTNodeAccess>> map = structureMeta.getColumnNodeMap();
             meta.getColumnExistMap().forEach((key, value) -> {
                 if (!value) {
@@ -142,12 +141,12 @@ public class MapperStatementDiagnostics {
         var mappings = boundSql.getParameterMappings();
         eventGroup.log(new TextEvent(context, String.format("Parameter notation count: %d", mappings.size())));
         Map<Named, NamedJDBCType> columnTypeMap = null;
-        StatementSymbolSet symbolSet = null;
+        SQLStructuralData symbolSet = null;
         try (var connection = statement.getConfiguration().getConnection()) {
             eventGroup.log(new TextEvent(context, String.format("Extracting column information...")));
-            var meta = QueryAnalysisService.analyze(connection, executableSql);
-            columnTypeMap = meta.getColumnTypeMap();
-            symbolSet = StructureAnalysisService.getSymbolSet(StructureAnalysisService.parseStatement(executableSql));
+            var meta = SQLAnalysisService.analyze(connection, executableSql);
+            columnTypeMap = meta.getColumnToTypeMap();
+            symbolSet = SQLAnalysisService.getSymbolSet(SQLAnalysisService.parseStatement(executableSql));
         } catch (SQLException | JSQLParserException e) {
             eventGroup.log(new TextEvent(context, String.format("An exception occurs: %s", e.toString())));
             eventGroup.log(new TextEvent(context, String.format("There is no available map for column types.")));
@@ -159,20 +158,20 @@ public class MapperStatementDiagnostics {
 //        } catch (JSQLParserException e) {
 //            throw new TypeCompatibilityCheckException("While checking type compatibility, the parsing error occurred.", e);
 //        }
-        if (symbolSet instanceof SelectSymbolSet) {
+        if (symbolSet instanceof SelectStructuralData) {
             eventGroup.log(new TextEvent(context, String.format("Statement type is Select")));
-            typeCompatibilityDiagnostics.checkBinaryExpressionList(((SelectSymbolSet) symbolSet).binaryExpressions, eventGroup).forEach(item -> errorList.add(item));
-        } else if (symbolSet instanceof InsertSymbolSet) {
+            typeCompatibilityDiagnostics.checkBinaryExpressionList(((SelectStructuralData) symbolSet).binaryExpressions, eventGroup).forEach(item -> errorList.add(item));
+        } else if (symbolSet instanceof InsertStructuralData) {
             eventGroup.log(new TextEvent(context, String.format("Statement type is Insert")));
-            typeCompatibilityDiagnostics.checkPairList(((InsertSymbolSet) symbolSet).pairs, eventGroup).forEach(item -> errorList.add(item));
-        } else if (symbolSet instanceof UpdateSymbolSet) {
+            typeCompatibilityDiagnostics.checkPairList(((InsertStructuralData) symbolSet).pairs, eventGroup).forEach(item -> errorList.add(item));
+        } else if (symbolSet instanceof UpdateStructuralData) {
             eventGroup.log(new TextEvent(context, String.format("Statement type is Update")));
-            typeCompatibilityDiagnostics.checkBinaryExpressionList(((UpdateSymbolSet) symbolSet).binaryExpressionsExceptForSet, eventGroup).forEach(item -> errorList.add(item));
+            typeCompatibilityDiagnostics.checkBinaryExpressionList(((UpdateStructuralData) symbolSet).binaryExpressionsExceptForSet, eventGroup).forEach(item -> errorList.add(item));
             ;
-            typeCompatibilityDiagnostics.checkPairList(((UpdateSymbolSet) symbolSet).simpleSetPairs, eventGroup).forEach(item -> errorList.add(item));
-        } else if (symbolSet instanceof DeleteSymbolSet) {
+            typeCompatibilityDiagnostics.checkPairList(((UpdateStructuralData) symbolSet).simpleSetPairs, eventGroup).forEach(item -> errorList.add(item));
+        } else if (symbolSet instanceof DeleteStructuralData) {
             eventGroup.log(new TextEvent(context, String.format("Statement type is Delete")));
-            typeCompatibilityDiagnostics.checkBinaryExpressionList(((DeleteSymbolSet) symbolSet).binaryExpressions, eventGroup).forEach(item -> errorList.add(item));
+            typeCompatibilityDiagnostics.checkBinaryExpressionList(((DeleteStructuralData) symbolSet).binaryExpressions, eventGroup).forEach(item -> errorList.add(item));
             ;
         } else
             eventGroup.log(new TextEvent(context, String.format("Other Statement type is not supported")));

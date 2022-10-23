@@ -1,7 +1,7 @@
 package mybatis.diagnostics.mapperStatementDiagnostics;
 
 import mybatis.diagnostics.MapperStatementDiagnostics;
-import mybatis.diagnostics.analysis.tree.visitor.DefaultContextProvider;
+import sql.analysis.tree.visitor.DefaultContextProvider;
 import mybatis.parser.XMLConfigParser;
 import mybatis.parser.model.Config;
 import mybatis.project.ConfigNotFoundException;
