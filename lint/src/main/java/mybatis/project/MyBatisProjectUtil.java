@@ -6,7 +6,7 @@ import org.apache.ibatis.parsing.XPathParser;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class ProjectUtil {
+public class MyBatisProjectUtil {
     public static boolean isMyBatisConfigFile(Path path){
         try {
             var parser = new XPathParser(Files.newInputStream(path), true, null, new XMLMapperEntityResolver());

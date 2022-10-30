@@ -9,7 +9,7 @@ import mybatis.parser.model.NotationToken;
 import mybatis.parser.model.ParameterMapChild;
 import mybatis.parser.model.ResolvingType;
 import mybatis.parser.registry.ImmutableTypeHandlerRegistry;
-import mybatis.project.WrapperClassType;
+import mybatis.project.ClassTypeWrapper;
 import org.apache.ibatis.builder.*;
 import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
@@ -161,12 +161,12 @@ public class BoundSqlStatementSourceBuilder extends BaseParser {
                 resolvingType = ResolvingType.PropertyNameNotFound;
                 propertyType = Object.class.getName();
             } else if (parameterTypeClass.isPresent()
-                    && WrapperClassType.isAssignableFrom(Map.class.getName()
+                    && ClassTypeWrapper.isAssignableFrom(Map.class.getName()
                     , parameterTypeClass.get().originalType)) {
                 resolvingType = ResolvingType.MapParameterTypeFound;
                 propertyType = Object.class.getName();
             } else if (parameterTypeClass.isPresent() && parameterTypeClass.get().originalType instanceof Type.ClassType) {
-                var wrapperClassType = WrapperClassType.create(parameterTypeClass.get());
+                var wrapperClassType = ClassTypeWrapper.create(parameterTypeClass.get());
                 if (wrapperClassType.hasGetter(property)) {
                     resolvingType = ResolvingType.GetterFound;
                     propertyType = wrapperClassType.getGetterType(property).declaredName;

@@ -20,7 +20,7 @@ public class DeleteStructuralData extends SQLStructuralData<Delete> {
 
     @Override
     public String toString() {
-        return "DeleteSymbolSet{" +
+        return "DeleteStructuralData{" +
                 "binaryExpressions=" + binaryExpressions +
                 ", \nStatementSymbolSet=\n" + super.toString() +
                 '}';

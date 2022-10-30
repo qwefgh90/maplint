@@ -13,9 +13,16 @@ import java.nio.file.Path;
 import java.util.stream.Collectors;
 
 public class MyBatisProjectService {
-    public JavaProject javaProject;
+    protected JavaProject javaProject;
 
     public MyBatisProjectService() {
+    }
+
+    public MyBatisProjectService(Path root) throws ConfigNotFoundException, MyBatisProjectInitializationException {
+        this.initialize(root);
+    }
+    public MyBatisProjectService(Path root, String configFileName) throws ConfigNotFoundException, MyBatisProjectInitializationException {
+        this.initialize(root, configFileName);
     }
 
     private Path configFile;
@@ -35,7 +42,7 @@ public class MyBatisProjectService {
                 .filter((f) -> f.path.getFileName().toString().contains(".xml"))
                 .filter((f) -> configFileName == null ? true : f.path.getFileName().toString().contains(configFileName))
                 .collect(Collectors.toList());
-        var candidates = allXMLFiles.stream().filter(f -> ProjectUtil.isMyBatisConfigFile(f.path)).collect(Collectors.toList());
+        var candidates = allXMLFiles.stream().filter(f -> MyBatisProjectUtil.isMyBatisConfigFile(f.path)).collect(Collectors.toList());
         var configPath = candidates.stream().sorted((a,b) -> -(a.path.getFileName().compareTo(b.path.getFileName()))).findFirst();
         if(configPath.isPresent()){
             resourceSystem = new ExternalResourceSystem(javaProject);
@@ -58,6 +65,10 @@ public class MyBatisProjectService {
             throw new RuntimeException(e);
         }
         return parser.parse();
+    }
+
+    public JavaProject getJavaProject() {
+        return javaProject;
     }
 
     public ResourceSystem getResourceSystem() {

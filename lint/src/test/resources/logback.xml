@@ -10,5 +10,6 @@
     </root>
 
     <logger name="mybatis" level="DEBUG" />
-    <logger name="jsqlparser" level="DEBUG" />
+    <logger name="misc" level="DEBUG" />
+    <logger name="sql" level="DEBUG" />
 </configuration>

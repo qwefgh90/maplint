@@ -1,14 +1,10 @@
 package mybatis.diagnostics.mapperStatementDiagnostics;
 
 import mybatis.diagnostics.MapperStatementDiagnostics;
-import sql.analysis.tree.visitor.DefaultContextProvider;
-import mybatis.parser.XMLConfigParser;
 import mybatis.parser.model.Config;
 import mybatis.project.ConfigNotFoundException;
 import mybatis.project.MyBatisProjectInitializationException;
 import mybatis.project.MyBatisProjectService;
-import mybatis.util.MapperUtil;
-import net.sf.jsqlparser.util.validation.Validation;
 import org.apache.ibatis.session.ExecutorType;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
@@ -20,8 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.HashMap;
 
 public class CheckGrammarTest {
     Logger logger = LoggerFactory.getLogger(CheckGrammarTest.class);
@@ -38,12 +32,9 @@ public class CheckGrammarTest {
     @BeforeAll
     static void setup() throws ConfigNotFoundException, IOException, URISyntaxException, SQLException, MyBatisProjectInitializationException {
         var root = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/mybatis-app1").toURI()).normalize();
-        var server = new MyBatisProjectService();
-        server.initialize(root, "h2");
-        var path = server.getConfigFile();
-
-        var parser = new XMLConfigParser(Files.newInputStream(path), server);
-        config = parser.parse();
+        var ddl = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/mybatis-app1/src/main/resources/db/Tables.ddl").toURI()).normalize();
+        var server = new MyBatisProjectService(root, "h2");
+        config = server.getParsedConfig();
         var env = config.getEnvironment();
         var manager = env.getTransactionManager();
         var transaction = manager
@@ -51,19 +42,9 @@ public class CheckGrammarTest {
                 .newTransaction(env.getDataSourceConfig().getDataSource(), null, false);
         var exec = config.newExecutor(transaction, ExecutorType.SIMPLE);
         var connection = transaction.getConnection();
-        var mapper = config.getMappedStatement("db.BlogMapper.createTableIfNotExist");
-        var pstmt = connection.prepareStatement(mapper.getSqlSource().getBoundSql(new HashMap()).toString());
+        var pstmt = connection.prepareStatement(Files.readString(ddl));
         pstmt.execute();
         connection.close();
-    }
-
-    void basicProcedure(){
-        var stmt = config.getMappedStatement("db.WrongGrammar.WrongSelectStatement1");
-        var executableSqlWithSignature = stmt.getBoundSql(new HashMap<>()).toString();
-        var executableSql = MapperUtil.trimSignature(executableSqlWithSignature);
-        var val = new Validation(Arrays.asList(DefaultContextProvider.DummyCapability.getInstance()), executableSql);
-        var r = val.validate();
-        logger.info(r.toString());
     }
 
     @Nested

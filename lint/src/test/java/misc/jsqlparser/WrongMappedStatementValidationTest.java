@@ -1,6 +1,5 @@
-package jsqlparser;
+package misc.jsqlparser;
 
-import mybatis.parser.XMLConfigParser;
 import mybatis.parser.model.Config;
 import mybatis.parser.sql.bound.DynamicBoundSqlStatementSource;
 import mybatis.project.ConfigNotFoundException;
@@ -27,8 +26,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class ValidationTest {
-    Logger logger = LoggerFactory.getLogger(ValidationTest.class);
+public class WrongMappedStatementValidationTest {
+    Logger logger = LoggerFactory.getLogger(WrongMappedStatementValidationTest.class);
 
     static Config config;
     Connection connection;
@@ -42,12 +41,9 @@ public class ValidationTest {
     @BeforeAll
     static void setup() throws ConfigNotFoundException, IOException, URISyntaxException, SQLException, MyBatisProjectInitializationException {
         var root = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/mybatis-app1").toURI()).normalize();
-        var server = new MyBatisProjectService();
-        server.initialize(root, "h2");
-        var path = server.getConfigFile();
-
-        var parser = new XMLConfigParser(Files.newInputStream(path), server);
-        config = parser.parse();
+        var ddl = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/mybatis-app1/src/main/resources/db/Tables.ddl").toURI()).normalize();
+        var server = new MyBatisProjectService(root, "h2");
+        config = server.getParsedConfig();
         var env = config.getEnvironment();
         var manager = env.getTransactionManager();
         var transaction = manager
@@ -55,17 +51,16 @@ public class ValidationTest {
                 .newTransaction(env.getDataSourceConfig().getDataSource(), null, false);
         var exec = config.newExecutor(transaction, ExecutorType.SIMPLE);
         var connection = transaction.getConnection();
-        var mapper = config.getMappedStatement("db.BlogMapper.createTableIfNotExist");
-        var pstmt = connection.prepareStatement(mapper.getSqlSource().getBoundSql(new HashMap()).toString());
+        var pstmt = connection.prepareStatement(Files.readString(ddl));
         pstmt.execute();
         connection.close();
     }
 
     @Nested
-    @DisplayName("with JDBCMetaData")
+    @DisplayName("with JdbcDatabaseMetaDataCapability")
     class MetaDateTest {
         @Nested
-        @DisplayName("Column name")
+        @DisplayName("Wrong Column Name")
         class ColumnNameTest {
             @Test
             void selectWrongColumnName() throws IOException, ConfigNotFoundException, URISyntaxException, SQLException, JSQLParserException {
@@ -174,7 +169,7 @@ public class ValidationTest {
         }
 
         @Nested
-        @DisplayName("Table name")
+        @DisplayName("Wrong Table Name")
         class TableName {
             @Test
             void selectWrongTableName() throws IOException, ConfigNotFoundException, URISyntaxException, SQLException, JSQLParserException {
@@ -287,7 +282,7 @@ public class ValidationTest {
     }
 
     @Nested
-    @DisplayName("PlaceHolder Position")
+    @DisplayName("Wrong Position of PlaceHolder")
     class PlaceholderTest {
         @Test
         void externalQuestionSymbol() {

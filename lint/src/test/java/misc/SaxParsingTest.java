@@ -1,4 +1,4 @@
-package jsqlparser;
+package misc;
 
 import mybatis.parser.XMLConfigParser;
 import mybatis.parser.location.LocationAnnotator;
@@ -32,11 +32,9 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-public class ParseTest {
-    Logger logger = LoggerFactory.getLogger(ParseTest.class);
-
+public class SaxParsingTest {
+    Logger logger = LoggerFactory.getLogger(SaxParsingTest.class);
     static Config config;
-
     @BeforeAll
     static void setup() throws ConfigNotFoundException, IOException, URISyntaxException, SQLException, MyBatisProjectInitializationException {
         var root = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/mybatis-app1").toURI()).normalize();

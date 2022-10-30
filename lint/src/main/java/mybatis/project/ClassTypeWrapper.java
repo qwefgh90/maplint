@@ -15,14 +15,14 @@ import com.sun.tools.javac.code.Type;
  * Additional data structures are included for Setter and Getter
  * Based on MetaClass.java and Reflector.java
  */
-public class WrapperClassType {
+public class ClassTypeWrapper {
     private final ClassType classType;
     private final Map<String, Member> getMethods = new HashMap<>();
     private final Map<String, Member> setMethods = new HashMap<>();
     private final Map<String, BaseType> setTypes = new HashMap<>();
     private final Map<String, BaseType> getTypes = new HashMap<>();
 
-    private WrapperClassType(ClassType classType) {
+    private ClassTypeWrapper(ClassType classType) {
         this.classType = classType;
         addGetMethods(getClassMethods(this.classType));
         addSetMethods(getClassMethods(this.classType));
@@ -168,22 +168,22 @@ public class WrapperClassType {
 
         var superType = classType.getSuperType();
         if (superType instanceof ClassType) {
-            var superClassType = new WrapperClassType(superType);
+            var superClassType = new ClassTypeWrapper(superType);
             addFields(superClassType.classType);
         }
     }
 
-    public static WrapperClassType create(Type.ClassType classType) {
+    public static ClassTypeWrapper create(Type.ClassType classType) {
         if (classType != null) {
             var superClassType = new ClassType(classType);
-            return new WrapperClassType(superClassType);
+            return new ClassTypeWrapper(superClassType);
         }
         return null;
     }
 
-    public static WrapperClassType create(ClassType classType) {
+    public static ClassTypeWrapper create(ClassType classType) {
         if (classType != null) {
-            return new WrapperClassType(classType);
+            return new ClassTypeWrapper(classType);
         }
         return null;
     }
@@ -347,7 +347,7 @@ public class WrapperClassType {
         getTypes.put(name, member.returnType);
     }
 
-    private WrapperClassType metaClassForProperty(String name) {
+    private ClassTypeWrapper metaClassForProperty(String name) {
         var type = getTypes.get(name);
         if (type.originalType instanceof Type.ClassType) {
             return create((Type.ClassType) type.originalType);
@@ -355,7 +355,7 @@ public class WrapperClassType {
         return null;
     }
 
-    private WrapperClassType metaClassForProperty(PropertyTokenizer prop) {
+    private ClassTypeWrapper metaClassForProperty(PropertyTokenizer prop) {
         var propType = getGetterType(prop);
         if (propType.originalType instanceof Type.ClassType) {
             return create((Type.ClassType) propType.originalType);

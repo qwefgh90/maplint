@@ -14,7 +14,7 @@ public class TypeResolver {
 
     public TypeResolver(MyBatisProjectService myBatisProjectService) {
         this.myBatisProjectService = myBatisProjectService;
-        finder = myBatisProjectService.javaProject.createTypeFinder();
+        finder = myBatisProjectService.getJavaProject().createTypeFinder();
     }
 
     public Optional<String> resolveAlias(String typeName){

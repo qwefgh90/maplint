@@ -346,7 +346,7 @@ public class XMLConfigParserTest {
             logger.info(stmt.getId());
             if (map.getType() != null) {
                 var parameter = map.getType();
-                var finder = server.javaProject.createTypeFinder();
+                var finder = server.getJavaProject().createTypeFinder();
                 classType = finder.findType(parameter);
                 logger.info("parameterType: " + parameter);
                 logger.info("parameterType: " + classType.toString());
@@ -358,7 +358,7 @@ public class XMLConfigParserTest {
             }
             stmt.getResultMaps().stream().findFirst().ifPresent((resultMap) -> {
                 var parameter = resultMap.getType();
-                var finder = server.javaProject.createTypeFinder();
+                var finder = server.getJavaProject().createTypeFinder();
                 var classTypeInResultMap = finder.findType(parameter);
                 Assertions.assertTrue(classTypeInResultMap.isPresent());
                 logger.info("resultType: " + classTypeInResultMap.get().toString());

@@ -1,4 +1,4 @@
-package jsqlparser.mysql;
+package misc.mysql;
 
 import mybatis.executor.statement.StatementHandler;
 import mybatis.parser.XMLConfigParser;
@@ -62,10 +62,6 @@ public class ClientPreparedStatementTest {
                     .newTransaction(env.getDataSourceConfig().getDataSource(), null, false);
             var exec = config.newExecutor(transaction, ExecutorType.SIMPLE);
             connection = transaction.getConnection();
-//        var mapper = config.getMappedStatement("db.BlogMapper.createTableIfNotExist");
-//        var pstmt = connection.prepareStatement(mapper.getSqlSource().getBoundSql(new HashMap()).getSql());
-//        pstmt.execute();
-
             StatementHandler handler = config.newStatementHandler(exec,
                     config.getMappedStatement("db.BlogMapper.insertAuthor"),
                     Map.of("id", 0, "name", "창원"), RowBounds.DEFAULT, null, null);
@@ -79,7 +75,6 @@ public class ClientPreparedStatementTest {
             Validation validation = new Validation(Arrays.asList(DatabaseType.H2), executableSql);
             List<ValidationError> errors = validation.validate();
             logger.debug(errors.toString());
-
         });
     }
 }

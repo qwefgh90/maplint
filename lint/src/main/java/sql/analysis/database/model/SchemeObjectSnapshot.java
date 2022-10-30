@@ -44,7 +44,7 @@ public class SchemeObjectSnapshot {
      * @return
      */
     public Boolean exists(Named named){
-        return columnExistMap.get(named);
+        return columnExistMap.getOrDefault(named, false);
     }
 
     @Override

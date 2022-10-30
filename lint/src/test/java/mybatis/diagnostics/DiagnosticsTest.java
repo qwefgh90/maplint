@@ -37,6 +37,7 @@ public class DiagnosticsTest {
     @BeforeAll
     static void setup() throws ConfigNotFoundException, IOException, URISyntaxException, SQLException, MyBatisProjectInitializationException {
         var root = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/mybatis-app1").toURI()).normalize();
+        var ddl = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/mybatis-app1/src/main/resources/db/Tables.ddl").toURI()).normalize();
         var server = new MyBatisProjectService();
         server.initialize(root, "h2");
         var path = server.getConfigFile();
@@ -50,8 +51,7 @@ public class DiagnosticsTest {
                 .newTransaction(env.getDataSourceConfig().getDataSource(), null, false);
         var exec = config.newExecutor(transaction, ExecutorType.SIMPLE);
         var connection = transaction.getConnection();
-        var mapper = config.getMappedStatement("db.BlogMapper.createTableIfNotExist");
-        var pstmt = connection.prepareStatement(mapper.getSqlSource().getBoundSql(new HashMap()).toString());
+        var pstmt = connection.prepareStatement(Files.readString(ddl));
         pstmt.execute();
         connection.close();
     }

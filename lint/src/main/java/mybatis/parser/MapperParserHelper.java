@@ -5,17 +5,12 @@ import mybatis.parser.model.MapperStatement;
 import mybatis.parser.model.ParameterMapChild;
 import mybatis.parser.model.ResultMapChild;
 import mybatis.parser.sql.bound.BoundSqlStatementSource;
-import mybatis.project.WrapperClassType;
+import mybatis.project.ClassTypeWrapper;
 import org.apache.ibatis.builder.BuilderException;
 import org.apache.ibatis.builder.IncompleteElementException;
 import org.apache.ibatis.executor.ErrorContext;
-import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.mapping.*;
-import org.apache.ibatis.reflection.MetaClass;
-import org.apache.ibatis.scripting.LanguageDriver;
-import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.TypeHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -515,7 +510,7 @@ public class MapperParserHelper extends BaseParser{
         if (javaType == null && property != null) {
             try {
                 var resultTypeClass  = configuration.getTypeResolver().resolveClass(resultType);
-                var wrapper = resultTypeClass.map(c -> WrapperClassType.create(c));
+                var wrapper = resultTypeClass.map(c -> ClassTypeWrapper.create(c));
                 if(wrapper.isPresent()){
                     javaType = wrapper.get().getSetterType(property).declaredName;
                 }

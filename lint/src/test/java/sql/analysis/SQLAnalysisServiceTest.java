@@ -1,6 +1,5 @@
-package mybatis.diagnostics.analysis;
+package sql.analysis;
 
-import mybatis.parser.XMLConfigParser;
 import mybatis.parser.model.Config;
 import mybatis.project.ConfigNotFoundException;
 import mybatis.project.MyBatisProjectInitializationException;
@@ -12,11 +11,16 @@ import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.util.validation.*;
+import net.sf.jsqlparser.util.validation.metadata.Named;
+import net.sf.jsqlparser.util.validation.metadata.NamedObject;
 import org.apache.ibatis.session.ExecutorType;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sql.analysis.SQLAnalysisService;
+import sql.analysis.tree.model.DeleteStructuralData;
+import sql.analysis.tree.model.InsertStructuralData;
+import sql.analysis.tree.model.SelectStructuralData;
+import sql.analysis.tree.model.UpdateStructuralData;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -26,9 +30,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
-public class ServiceTests {
+public class SQLAnalysisServiceTest {
 
-    Logger logger = LoggerFactory.getLogger(ServiceTests.class);
+    Logger logger = LoggerFactory.getLogger(SQLAnalysisServiceTest.class);
 
     static Config config;
     Connection connection;
@@ -42,12 +46,9 @@ public class ServiceTests {
     @BeforeAll
     static void setup() throws ConfigNotFoundException, IOException, URISyntaxException, SQLException, MyBatisProjectInitializationException {
         var root = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/mybatis-app1").toURI()).normalize();
-        var server = new MyBatisProjectService();
-        server.initialize(root, "h2");
-        var path = server.getConfigFile();
-
-        var parser = new XMLConfigParser(Files.newInputStream(path), server);
-        config = parser.parse();
+        var ddl = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/mybatis-app1/src/main/resources/db/Tables.ddl").toURI()).normalize();
+        var server = new MyBatisProjectService(root, "h2");
+        config = server.getParsedConfig();
         var env = config.getEnvironment();
         var manager = env.getTransactionManager();
         var transaction = manager
@@ -55,8 +56,7 @@ public class ServiceTests {
                 .newTransaction(env.getDataSourceConfig().getDataSource(), null, false);
         var exec = config.newExecutor(transaction, ExecutorType.SIMPLE);
         var connection = transaction.getConnection();
-        var mapper = config.getMappedStatement("db.BlogMapper.createTableIfNotExist");
-        var pstmt = connection.prepareStatement(mapper.getSqlSource().getBoundSql(new HashMap()).toString());
+        var pstmt = connection.prepareStatement(Files.readString(ddl));
         pstmt.execute();
         connection.close();
     }
@@ -74,19 +74,22 @@ public class ServiceTests {
         var exec = config.newExecutor(transaction, ExecutorType.SIMPLE);
         connection = transaction.getConnection();
 
-//        var typeCollectCapability = new DatabaseMetadataCollectCapability(connection, NamesLookup.UPPERCASE);
-//        Validation validation = new Validation(Arrays.asList(typeCollectCapability), executableSql);
-//        List<ValidationError> errors = validation.validate();
-//        logger.debug(typeCollectCapability.getColumnTypeMap().toString());
         var meta = SQLAnalysisService.analyze(connection, executableSql);
         logger.debug(meta.toString());
+        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Blog").setAlias("B")));
+        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Author").setAlias("A")));
+        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Content").setAlias("C")));
+        Assertions.assertTrue(meta.getColumnExistMap().entrySet().stream()
+                .filter(e -> e.getKey().getNamedObject().equals(NamedObject.column))
+                .count() >= 2);
 
         var symbolSet = SQLAnalysisService.getSymbolSet((Select) SQLAnalysisService.parseStatement(executableSql));
         logger.debug(symbolSet.toString());
+        Assertions.assertTrue(symbolSet instanceof SelectStructuralData);
     }
 
     @Test
-    void select2() throws IOException, ConfigNotFoundException, URISyntaxException, SQLException, JSQLParserException {
+    void wrongObjectName() throws IOException, ConfigNotFoundException, URISyntaxException, SQLException, JSQLParserException {
         var executableSql = config.getMappedStatement("db.WrongBlogMapper.selectBlog2").getBoundSql(new HashMap<>()).toString();
         logger.debug(executableSql);
 
@@ -98,15 +101,18 @@ public class ServiceTests {
         var exec = config.newExecutor(transaction, ExecutorType.SIMPLE);
         connection = transaction.getConnection();
 
-//        var typeCollectCapability = new DatabaseMetadataCollectCapability(connection, NamesLookup.UPPERCASE);
-//        Validation validation = new Validation(Arrays.asList(typeCollectCapability), executableSql);
-//        List<ValidationError> errors = validation.validate();
-//        logger.debug(typeCollectCapability.getColumnTypeMap().toString());
         var meta = SQLAnalysisService.analyze(connection, executableSql);
         logger.debug(meta.toString());
+        Assertions.assertFalse(meta.exists(new Named(NamedObject.table, "Blog").setAlias("B")));
+        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Author").setAlias("A")));
+        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Content").setAlias("C")));
+        Assertions.assertTrue(meta.getColumnExistMap().entrySet().stream()
+                .filter(e -> e.getKey().getNamedObject().equals(NamedObject.column))
+                .count() >= 2);
 
         var symbolSet = SQLAnalysisService.getSymbolSet((Select) SQLAnalysisService.parseStatement(executableSql));
         logger.debug(symbolSet.toString());
+        Assertions.assertTrue(symbolSet instanceof SelectStructuralData);
     }
 
     public static ValidationContext createValidationContext() {
@@ -129,14 +135,16 @@ public class ServiceTests {
         var exec = config.newExecutor(transaction, ExecutorType.SIMPLE);
         connection = transaction.getConnection();
 
-//        var databaseMetadataCollectCapability = new DatabaseMetadataCollectCapability(connection, NamesLookup.UPPERCASE);
-//        Validation validation = new Validation(Arrays.asList(databaseMetadataCollectCapability), executableSql);
-//        List<ValidationError> errors = validation.validate();
         var meta = SQLAnalysisService.analyze(connection, executableSql);
         logger.debug(meta.toString());
+        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Blog")));
+        Assertions.assertTrue(meta.getColumnExistMap().entrySet().stream()
+                        .filter(e -> e.getKey().getNamedObject().equals(NamedObject.column))
+                        .count() >= 4);
 
         var symbolSet = SQLAnalysisService.getSymbolSet((Insert) SQLAnalysisService.parseStatement(executableSql));
         logger.debug(symbolSet.toString());
+        Assertions.assertTrue(symbolSet instanceof InsertStructuralData);
     }
 
     @Test
@@ -151,16 +159,16 @@ public class ServiceTests {
                 .newTransaction(env.getDataSourceConfig().getDataSource(), null, false);
         var exec = config.newExecutor(transaction, ExecutorType.SIMPLE);
         connection = transaction.getConnection();
-
-//        var namedObjectVisitor = new DatabaseMetadataCollectCapability(connection, NamesLookup.UPPERCASE);
-//        Validation validation = new Validation(Arrays.asList(namedObjectVisitor), executableSql);
-//        List<ValidationError> errors = validation.validate();
-//        logger.debug(namedObjectVisitor.getColumnTypeMap().toString());
         var meta = SQLAnalysisService.analyze(connection, executableSql);
         logger.debug(meta.toString());
+        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Content")));
+        Assertions.assertTrue(meta.getColumnExistMap().entrySet().stream()
+                .filter(e -> e.getKey().getNamedObject().equals(NamedObject.column))
+                .count() >= 1);
 
         var symbolSet = SQLAnalysisService.getSymbolSet((Update) SQLAnalysisService.parseStatement(executableSql));
         logger.debug(symbolSet.toString());
+        Assertions.assertTrue(symbolSet instanceof UpdateStructuralData);
     }
 
     @Test
@@ -176,14 +184,13 @@ public class ServiceTests {
         var exec = config.newExecutor(transaction, ExecutorType.SIMPLE);
         connection = transaction.getConnection();
 
-//        var namedObjectVisitor = new DatabaseMetadataCollectCapability(connection, NamesLookup.UPPERCASE);
-//        Validation validation = new Validation(Arrays.asList(namedObjectVisitor), executableSql);
-//        List<ValidationError> errors = validation.validate();
-//        logger.debug(namedObjectVisitor.getColumnTypeMap().toString());
         var meta = SQLAnalysisService.analyze(connection, executableSql);
         logger.debug(meta.toString());
+        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Content")));
+        Assertions.assertTrue(meta.exists(new Named(NamedObject.column, "id")));
 
         var symbolSet = SQLAnalysisService.getSymbolSet((Delete) SQLAnalysisService.parseStatement(executableSql));
         logger.debug(symbolSet.toString());
+        Assertions.assertTrue(symbolSet instanceof DeleteStructuralData);
     }
 }
