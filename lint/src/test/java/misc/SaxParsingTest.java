@@ -38,8 +38,7 @@ public class SaxParsingTest {
     @BeforeAll
     static void setup() throws ConfigNotFoundException, IOException, URISyntaxException, SQLException, MyBatisProjectInitializationException {
         var root = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/mybatis-app1").toURI()).normalize();
-        var server = new MyBatisProjectService();
-        server.initialize(root, "h2");
+        var server = new MyBatisProjectService(root, "h2");
         var path = server.getConfigFile();
 
         var parser = new XMLConfigParser(Files.newInputStream(path), server);

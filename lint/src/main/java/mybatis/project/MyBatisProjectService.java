@@ -12,9 +12,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Collectors;
 
-public class MyBatisProjectService {
+public class MyBatisProjectService implements AutoCloseable {
     protected JavaProject javaProject;
-
     public MyBatisProjectService() {
     }
 
@@ -28,10 +27,10 @@ public class MyBatisProjectService {
     private Path configFile;
     private ResourceSystem resourceSystem;
 
-    public void initialize(Path root) throws ConfigNotFoundException, MyBatisProjectInitializationException {
+    protected void initialize(Path root) throws ConfigNotFoundException, MyBatisProjectInitializationException {
         this.initialize(root, null);
     }
-    public void initialize(Path root, String configFileName) throws ConfigNotFoundException, MyBatisProjectInitializationException {
+    protected void initialize(Path root, String configFileName) throws ConfigNotFoundException, MyBatisProjectInitializationException {
         var service = JavaLanguageService.getLanguageService();
         try {
             javaProject = service.createJavaProject(root);
@@ -73,5 +72,11 @@ public class MyBatisProjectService {
 
     public ResourceSystem getResourceSystem() {
         return resourceSystem;
+    }
+
+    @Override
+    public void close() throws Exception {
+        if(javaProject!=null)
+            javaProject.close();
     }
 }

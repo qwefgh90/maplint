@@ -35,8 +35,7 @@ public class LintServicePerfTest {
         var root = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/mybatis-app1").toURI()).normalize();
         var ddl = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/mybatis-app1/src/main/resources/db/Tables.ddl").toURI()).normalize();
 
-        var server = new MyBatisProjectService();
-        server.initialize(root, "h2-perf");
+        var server = new MyBatisProjectService(root, "h2-perf");
         var path = server.getConfigFile();
 
         var parser = new XMLConfigParser(Files.newInputStream(path), server);

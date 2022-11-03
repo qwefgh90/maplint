@@ -32,8 +32,7 @@ public class LintServiceTest {
         var root = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/mybatis-app1").toURI()).normalize();
         var ddl = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/mybatis-app1/src/main/resources/db/Tables.ddl").toURI()).normalize();
 
-        var server = new MyBatisProjectService();
-        server.initialize(root, "h2");
+        var server = new MyBatisProjectService(root, "h2");
         var path = server.getConfigFile();
 
         var parser = new XMLConfigParser(Files.newInputStream(path), server);
@@ -52,8 +51,7 @@ public class LintServiceTest {
 
     static void setupLoginProject() throws ConfigNotFoundException, URISyntaxException, SQLException, DatabaseObjectNameCheckException, MyBatisProjectInitializationException {
         var root = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/login-project").toURI()).normalize();
-        var server = new MyBatisProjectService();
-        server.initialize(root, "h2");
+        var server = new MyBatisProjectService(root, "h2");
         var config = server.getParsedConfig();
         var env = config.getEnvironment();
         var manager = env.getTransactionManager();

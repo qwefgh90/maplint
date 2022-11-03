@@ -5,7 +5,9 @@
         </encoder>
     </appender>
 
-    <root level="debug">
+    <root level="info">
         <appender-ref ref="stdout" />
     </root>
+
+    <logger name="els" level="DEBUG" />
 </configuration>

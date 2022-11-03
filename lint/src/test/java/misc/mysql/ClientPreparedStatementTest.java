@@ -44,8 +44,7 @@ public class ClientPreparedStatementTest {
     @BeforeAll
     static void setup() throws ConfigNotFoundException, IOException, URISyntaxException, MyBatisProjectInitializationException {
         var root = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/mybatis-app1").toURI()).normalize();
-        var server = new MyBatisProjectService();
-        server.initialize(root);
+        var server = new MyBatisProjectService(root);
         var path = server.getConfigFile();
 
         var parser = new XMLConfigParser(Files.newInputStream(path), server);

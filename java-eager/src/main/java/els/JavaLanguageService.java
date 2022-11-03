@@ -12,22 +12,29 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * JavaLanguageService is the top-level service to support importing projects.
+ * JavaLanguageService is the top-level service to support importing the java project.
  *
  * @author qwefgh90
  */
 public final class JavaLanguageService {
     private static final Logger logger = LoggerFactory.getLogger(JavaLanguageService.class);
     private Map<Path, JavaProject> projectList = new HashMap<>();
-    protected Path workspaceRoot;
+    protected Path workspace;
 
-    protected JavaLanguageService(Path workspaceRoot) {
-        this.workspaceRoot = workspaceRoot;
-        logger.info("A new lang service's been started in a workspace of {}.", workspaceRoot.toAbsolutePath().toString());
+    protected JavaLanguageService(Path workspace) {
+        this.workspace = workspace;
+        logger.info("A new language service's been created on {}.", workspace.toAbsolutePath());
     }
 
+    /**
+     * It figures out the type of the project.
+     * And it creates an instance of JavaProject
+     * @param path
+     * @return an instance of JavaProject
+     * @throws JavaProjectInitializationError
+     */
     public JavaProject createJavaProject(Path path) throws JavaProjectInitializationError {
-        var factory = JavaProjectFactory.getFactory(path);
+        var factory = JavaProjectFactory.getFactory(workspace, path);
         if (projectList.containsKey(path))
             return projectList.get(path);
         else {
@@ -40,7 +47,7 @@ public final class JavaLanguageService {
                                          Set<String> externalDependencies,
                                          Set<Path> classPath,
                                          Set<String> addExports) throws JavaProjectInitializationError {
-        var factory = JavaProjectFactory.getFactory(path);
+        var factory = JavaProjectFactory.getFactory(workspace, path);
         if (projectList.containsKey(path))
             return projectList.get(path);
         else {
@@ -50,9 +57,8 @@ public final class JavaLanguageService {
     }
 
     /**
-     * It returns the default instance on a temporary workspace.
-     *
-     * @return default instance
+     * It creates a instance of JavaLanguageService with a temporary workspace.
+     * @return an instance of the language service
      */
     public static JavaLanguageService getLanguageService() {
         try {
@@ -63,7 +69,12 @@ public final class JavaLanguageService {
         }
     }
 
-    private static JavaLanguageService getLanguageService(Path workspaceRoot) {
+    /**
+     * It creates a instance of JavaLanguageService with a provided workspace
+     * @param workspaceRoot
+     * @return an instance of the language service
+     */
+    public static JavaLanguageService getLanguageService(Path workspaceRoot) {
         return new JavaLanguageService(workspaceRoot);
     }
 }

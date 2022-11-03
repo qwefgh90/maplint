@@ -2,6 +2,7 @@ package els.compiler;
 
 import els.JavaLanguageService;
 import els.exception.JavaProjectInitializationError;
+import els.project.maven.MavenUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -9,6 +10,7 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
@@ -30,5 +32,11 @@ public class SourceFileManagerServiceTest {
         Assertions.assertNotNull(dep);
         Assertions.assertNotNull(jdk);
         Assertions.assertNotNull(user);
+    }
+
+    @Test
+    public void mavenExample() throws Exception {
+        var root = Paths.get(ClassLoader.getSystemClassLoader().getResource("mybatis1").toURI()).normalize();
+        MavenUtils.dependencies(Files.createTempDirectory("local-repository"), root);
     }
 }

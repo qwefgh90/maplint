@@ -1,6 +1,9 @@
 package els.project;
 
 import els.exception.JavaProjectInitializationError;
+import els.project.maven.MavenUtils;
+import org.apache.maven.model.building.ModelBuildingException;
+import org.eclipse.aether.artifact.Artifact;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,9 +12,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author qwefgh90
@@ -20,16 +26,22 @@ public class MavenProjectFactory extends JavaProjectFactory implements MavenProj
     Logger logger = LoggerFactory.getLogger(MavenProjectFactory.class);
     public final Path pomXml;
 
-    public MavenProjectFactory(Path root) {
-        super(root);
-        pomXml = root.resolve("pom.xml");
+    public MavenProjectFactory(Path workspace, Path projectRoot) {
+        super(workspace, projectRoot);
+        pomXml = projectRoot.resolve("pom.xml");
     }
 
     @Override
     public JavaProject create(Set<String> externalDependencies, Set<Path> classPath, Set<String> exports) throws JavaProjectInitializationError {
-        var dependencies = mvnDependencies(pomXml, "dependency:list");
-        var docs = mvnDependencies(pomXml, "dependency:sources");
-        return new MavenProject(root, dependencies, docs, classPath, exports, externalDependencies, pomXml, this);
+        //var dependencies = mvnDependencies(pomXml, "dependency:list");
+        Set<Path> dependencies = null;
+        try {
+            dependencies = MavenUtils.dependencies(workspace, projectRoot).stream().map(d -> d.getFile().toPath()).collect(Collectors.toSet());
+        } catch (ModelBuildingException e) {
+            throw new RuntimeException(e);
+        }
+        var docs = Collections.EMPTY_SET;
+        return new MavenProject(projectRoot, dependencies, docs, classPath, exports, externalDependencies, pomXml, this);
     }
 
     /**

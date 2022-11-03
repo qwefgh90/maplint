@@ -26,9 +26,7 @@ public class LintService {
         LintReport.LintReportBuilder reportBuilder = LintReport.LintReportBuilder.aLintReport();
         reportBuilder.start(LocalDateTime.now());
         reportBuilder.getProjectInitializationTimeBuilder().start(LocalDateTime.now());
-        var service = new MyBatisProjectService();
-        try {
-            service.initialize(lintOption.getProjectPath(), lintOption.getConfigFileName() != null ? lintOption.getConfigFileName() : "");
+        try(var service = new MyBatisProjectService(lintOption.getProjectPath(), lintOption.getConfigFileName() != null ? lintOption.getConfigFileName() : "")) {
             reportBuilder.getProjectInitializationTimeBuilder().end(LocalDateTime.now());
             reportBuilder.getParsingTimeBuilder().start(LocalDateTime.now());
             var config = service.getParsedConfig();
@@ -83,7 +81,9 @@ public class LintService {
             e.printStackTrace();
         } catch (MyBatisProjectInitializationException e) {
             e.printStackTrace();
-        }finally {
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
             reportBuilder.end(LocalDateTime.now());
         }
         return reportBuilder.build();

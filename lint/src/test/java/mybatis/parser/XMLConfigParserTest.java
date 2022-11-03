@@ -33,8 +33,7 @@ public class XMLConfigParserTest {
     @BeforeAll
     static void setup() throws ConfigNotFoundException, IOException, URISyntaxException, MyBatisProjectInitializationException {
         var root = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/mybatis-app1").toURI()).normalize();
-        var server = new MyBatisProjectService();
-        server.initialize(root);
+        var server = new MyBatisProjectService(root);
         var path = server.getConfigFile();
         var parser = new XMLConfigParser(Files.newInputStream(path), server);
         config = parser.parse();
@@ -334,8 +333,7 @@ public class XMLConfigParserTest {
     @Test
     void printTypesInMappedStatement() throws IOException, URISyntaxException, ConfigNotFoundException, MyBatisProjectInitializationException {
         var root = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/mybatis-app1").toURI()).normalize();
-        var server = new MyBatisProjectService();
-        server.initialize(root);
+        var server = new MyBatisProjectService(root);
         var path = server.getConfigFile();
         var parser = new XMLConfigParser(Files.newInputStream(path), server);
         var config = parser.parse();
@@ -371,8 +369,7 @@ public class XMLConfigParserTest {
     @Test
     void parsingTest() throws URISyntaxException, IOException, ConfigNotFoundException, MyBatisProjectInitializationException {
         var root = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/mybatis-app1").toURI()).normalize();
-        var server = new MyBatisProjectService();
-        server.initialize(root);
+        var server = new MyBatisProjectService(root);
         var path = server.getConfigFile();
         var parser = new XMLConfigParser(Files.newInputStream(path), server);
         var config = parser.parse();
@@ -384,8 +381,7 @@ public class XMLConfigParserTest {
     void mybatisConfigNotFoundTest() {
         Assertions.assertThrows(Exception.class, () -> {
             var root = Paths.get(ClassLoader.getSystemClassLoader().getResource("examples/java-project").toURI()).normalize();
-            var server = new MyBatisProjectService();
-            server.initialize(root);
+            var server = new MyBatisProjectService(root);
         });
     }
 }
