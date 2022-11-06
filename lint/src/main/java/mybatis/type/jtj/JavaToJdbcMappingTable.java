@@ -12,24 +12,19 @@ import java.time.*;
 import java.time.chrono.JapaneseDate;
 import java.util.*;
 
-public class JavaToJdbcMappingTable {
-    private Map<String, Set<JDBCType>> javaToJdbcMap = new HashMap<>();
-
-    protected void putIntoJavaToJdbcMap(String className, JDBCType type){
-        if(javaToJdbcMap.containsKey(className)){
-            javaToJdbcMap.get(className).add(type);
-        }else{
-            var newList = new HashSet<JDBCType>();
-            newList.add(type);
-            javaToJdbcMap.put(className, newList);
+public class JavaToJdbcMappingTable extends AbstractJavaToJdbcMappingTable {
+    //MySQL 8.0.28
+    void initializeFromDefaultMySQLType() {
+        for (var entry : DefaultMySQLTypeCopy.DEFAULT_MYSQL_TYPES.entrySet()) {
+            putIntoJavaToJdbcMap(entry.getKey().getName(), JDBCType.valueOf(entry.getValue().getJdbcType()));
         }
     }
 
-    public Set<JDBCType> findJdbcTypeSet(Class clazz){
+    public Set<JDBCType> findJdbcTypeSet(Class clazz) {
         return javaToJdbcMap.get(clazz.getName());
     }
 
-    public Set<JDBCType> findJdbcTypeSet(String fullClassName){
+    public Set<JDBCType> findJdbcTypeSet(String fullClassName) {
         return javaToJdbcMap.get(fullClassName);
     }
 
@@ -38,13 +33,6 @@ public class JavaToJdbcMappingTable {
 
         //MySQL mappings
         initializeFromDefaultMySQLType();
-    }
-
-    //MySQL 8.0.28
-    void initializeFromDefaultMySQLType(){
-        for(var entry : DefaultMySQLTypeCopy.DEFAULT_MYSQL_TYPES.entrySet()){
-            putIntoJavaToJdbcMap(entry.getKey().getName(), JDBCType.valueOf(entry.getValue().getJdbcType()));
-        }
     }
 
     //MyBatis 3.5.9
@@ -332,139 +320,4 @@ public class JavaToJdbcMappingTable {
         //ZonedDateTimeTypeHandler.java
         putSetObject(ZonedDateTime.class.getName());
     }
-
-    private void putSetBinaryStream(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.BLOB);
-        putIntoJavaToJdbcMap(className, JDBCType.LONGVARBINARY);
-    }
-
-    private void putSetBoolean(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.BIT);
-        putIntoJavaToJdbcMap(className, JDBCType.BOOLEAN);
-    }
-
-    private void putSetByte(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.VARBINARY);
-        putIntoJavaToJdbcMap(className, JDBCType.LONGVARBINARY);
-    }
-
-    private void putSetShort(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.SMALLINT);
-    }
-
-    private void putSetInt(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.INTEGER);
-    }
-
-    private void putSetLong(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.BIGINT);
-    }
-
-    private void putSetFloat(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.FLOAT);
-        putIntoJavaToJdbcMap(className, JDBCType.REAL);
-    }
-
-    private void putSetDouble(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.DOUBLE);
-    }
-
-    private void putSetBigDecimal(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.NUMERIC);
-
-    }
-
-    private void putSetString(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.VARCHAR);
-        putIntoJavaToJdbcMap(className, JDBCType.LONGVARCHAR);
-    }
-
-    private void putSetBytes(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.VARBINARY);
-        putIntoJavaToJdbcMap(className, JDBCType.LONGVARBINARY);
-    }
-
-    private void putSetUnicodeStream(String className) {
-
-    }
-
-    private void putClearParameters(String className) {
-
-    }
-
-    private void putAddBatch(String className) {
-
-    }
-
-    private void putSetRef(String className) {
-
-    }
-
-    private void putSetArray(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.ARRAY);
-    }
-
-    private void putSetDate(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.DATE);
-    }
-
-    private void putSetTime(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.TIME);
-    }
-
-    private void putSetTimestamp(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.TIMESTAMP);
-    }
-
-    private void putSetNull(String className) {
-
-    }
-
-    private void putSetURL(String className) {
-
-    }
-
-    private void putSetRowId(String className) {
-
-    }
-
-    private void putSetNString(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.NCHAR);
-        putIntoJavaToJdbcMap(className, JDBCType.NVARCHAR);
-        putIntoJavaToJdbcMap(className, JDBCType.LONGNVARCHAR);
-    }
-
-    private void putSetSQLXML(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.SQLXML);
-    }
-
-    private void putSetObject(String className) {
-        // it will be complemented by drivers (MySQLType.java)
-    }
-
-    private void putSetNCharacterStream(String className) {
-
-    }
-
-    private void putSetCharacterStream(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.LONGNVARCHAR);
-    }
-
-    private void putSetClob(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.CLOB);
-        putIntoJavaToJdbcMap(className, JDBCType.LONGNVARCHAR);
-    }
-
-    private void putSetBlob(String className) {
-        putIntoJavaToJdbcMap(className, JDBCType.BLOB);
-        putIntoJavaToJdbcMap(className, JDBCType.LONGVARBINARY);
-    }
-
-    private void putSetNClob(String className) {
-
-    }
-
-//    java.sql.JDBCType getJDBC(String fullClassName) {
-//
-//    }
 }
