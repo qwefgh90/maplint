@@ -51,47 +51,58 @@ public class CheckGrammarTest {
     @DisplayName("Insert Into Statement")
     class InsertStatementTest {
         @Test
-        void test() {
+        void testN1() {
             var stmt = config.getMappedStatement("db.WrongGrammar.InsertStatement1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().isEmpty());
+
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
         @Test
-        void test1() {
+        void testP1() {
             var stmt = config.getMappedStatement("db.WrongGrammar.WrongInsertStatement1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
 
 
         @Test
-        void test2() {
+        void testP2() {
             var stmt = config.getMappedStatement("db.WrongGrammar.WrongInsertStatement2");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
 
         @Test
-        void test4() {
+        void testP3() {
             var stmt = config.getMappedStatement("db.WrongGrammar.WrongInsertStatement4");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
 
         @Test
-        void test5() {
+        void testP4() {
             var stmt = config.getMappedStatement("db.WrongGrammar.WrongInsertStatement5");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
     }
 
@@ -99,56 +110,68 @@ public class CheckGrammarTest {
     @DisplayName("Insert Select Statement")
     class InsertSelectStatementTest {
         @Test
-        void test() {
+        void testN1() {
             var stmt = config.getMappedStatement("db.WrongGrammar.InsertSelectStatement1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().isEmpty());
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
 
         @Test
-        void test1() {
+        void testP1() {
             var stmt = config.getMappedStatement("db.WrongGrammar.WrongInsertSelectStatement1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
 
         @Test
-        void test2() {
+        void testP2() {
             var stmt = config.getMappedStatement("db.WrongGrammar.WrongInsertSelectStatement2");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
 
         @Test
-        void test3() {
+        void testP3() {
             var stmt = config.getMappedStatement("db.WrongGrammar.WrongInsertSelectStatement3");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
 
         @Test
-        void test4() {
+        void testP4() {
             var stmt = config.getMappedStatement("db.WrongGrammar.WrongInsertSelectStatement4");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
 
         @Test
-        void test5() {
+        void testP5() {
             var stmt = config.getMappedStatement("db.WrongGrammar.WrongInsertSelectStatement5");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
     }
 
@@ -156,59 +179,73 @@ public class CheckGrammarTest {
     @DisplayName("Select Join Where Statement")
     class SelectStatementTest {
         @Test
-        void test() {
+        void testN1() {
             var stmt = config.getMappedStatement("db.WrongGrammar.SelectJoinStatement");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().isEmpty());
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
         @Test
-        void test1() {
+        void testP1() {
             var stmt = config.getMappedStatement("db.WrongGrammar.WrongSelectStatement1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
         @Test
-        void test2() {
+        void testP2() {
             var stmt = config.getMappedStatement("db.WrongGrammar.WrongSelectStatement2");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
         @Test
-        void test3() {
+        void testP3() {
             var stmt = config.getMappedStatement("db.WrongGrammar.WrongSelectStatement3");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
         @Test
-        void test4() {
+        void testP4() {
             var stmt = config.getMappedStatement("db.WrongGrammar.WrongSelectStatement4");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
         @Test
-        void test5() {
+        void testP5() {
             var stmt = config.getMappedStatement("db.WrongGrammar.WrongSelectStatement5");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
         @Test
-        void test6() {
+        void testP6() {
             var stmt = config.getMappedStatement("db.WrongGrammar.WrongSelectStatement6");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
     }
 
@@ -216,73 +253,89 @@ public class CheckGrammarTest {
     @DisplayName("Select Union Statement")
     class SelectUnionStatementTest {
         @Test
-        void test() {
+        void testN1() {
             var stmt = config.getMappedStatement("db.WrongGrammar.SelectUnionStatement1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().isEmpty());
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
         @Test
-        void test1() {
+        void testP1() {
             var stmt = config.getMappedStatement("db.WrongGrammar.WrongSelectUnionStatement1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
     }
     @Nested
     @DisplayName("Select Into Statement")
     class SelectIntoStatementTest {
         @Test
-        void test() {
+        void testN1() {
             var stmt = config.getMappedStatement("db.WrongGrammar.SelectIntoStatement1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().isEmpty());
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
         @Test
-        void test1() {
+        void testP1() {
             var stmt = config.getMappedStatement("db.WrongGrammar.WrongSelectIntoStatement1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
     }
     @Nested
     @DisplayName("Update Statement")
     class UpdateStatementTest {
         @Test
-        void test() {
+        void testN1() {
             var stmt = config.getMappedStatement("db.WrongGrammar.updateContent1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().isEmpty());
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
         @Test
-        void test1() {
+        void testP1() {
             var stmt = config.getMappedStatement("db.WrongGrammar.wrongUpdateContent1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
         @Test
-        void test2() {
+        void testP2() {
             var stmt = config.getMappedStatement("db.WrongGrammar.wrongUpdateContent2");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
         @Test
-        void test3() {
+        void testP3() {
             var stmt = config.getMappedStatement("db.WrongGrammar.wrongUpdateContent3");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
     }
 
@@ -290,27 +343,33 @@ public class CheckGrammarTest {
     @DisplayName("Delete Statement")
     class DeleteStatementTest {
         @Test
-        void test() {
+        void testN1() {
             var stmt = config.getMappedStatement("db.WrongGrammar.deleteContent");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().isEmpty());
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
         @Test
-        void test1() {
+        void testP1() {
             var stmt = config.getMappedStatement("db.WrongGrammar.wrongDeleteContent1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
         @Test
-        void test2() {
+        void testP2() {
             var stmt = config.getMappedStatement("db.WrongGrammar.wrongDeleteContent2");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkGrammar(stmt);
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
-            logger.info(result.build().getErrorList().get(0).toString());
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
+
         }
     }
 }

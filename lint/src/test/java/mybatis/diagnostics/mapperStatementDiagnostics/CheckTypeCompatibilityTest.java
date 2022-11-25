@@ -61,21 +61,23 @@ public class CheckTypeCompatibilityTest {
     @DisplayName("Insert Into Statement")
     class InsertIntoStatementTest {
         @Test
-        void test() throws SQLException, JSQLParserException, TypeCompatibilityCheckException {
+        void testN1() throws SQLException, JSQLParserException, TypeCompatibilityCheckException {
             var stmt = config.getMappedStatement("db.WrongType.InsertStatement1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-            logger.info(result.toString());
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
 
         @Test
-        void test1() throws SQLException, JSQLParserException, TypeCompatibilityCheckException {
+        void testP1() throws SQLException, JSQLParserException, TypeCompatibilityCheckException {
             var stmt = config.getMappedStatement("db.WrongType.WrongInsertStatement1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-            logger.info(result.toString());
             Assertions.assertEquals(result.build().getErrorList().size(), 1);
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
         }
     }
 
@@ -83,20 +85,34 @@ public class CheckTypeCompatibilityTest {
     @DisplayName("Insert Select Statement")
     class InsertSelectStatementTest {
         @Test
-        void test() throws TypeCompatibilityCheckException {
+        void testN1() throws TypeCompatibilityCheckException {
             var stmt = config.getMappedStatement("db.WrongType.InsertSelectStatement1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
+
         @Test
-        void test1() throws TypeCompatibilityCheckException {
+        void testP1() throws TypeCompatibilityCheckException {
             var stmt = config.getMappedStatement("db.WrongType.WrongInsertSelectStatement1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-            logger.info(result.toString());
-            Assertions.assertEquals(result.build().getErrorList().size(), 1);
+            int tpCount = 0;
+            int fnCount = 0;
+
+            if(1 ==
+                    result.build().getErrorList().stream().filter(err ->
+                            err.getContext().getSource().sourcePosition.get().beginLine == 5
+                    ).count())
+                tpCount++;
+            else
+                fnCount++;
+            logger.info("TP: {}, FP: {}", tpCount, result.build().getErrorList().size() - tpCount);
+            logger.info("TN: {}, FN: {}", 0, fnCount);
+            Assertions.assertEquals(1, result.build().getErrorList().size());
         }
     }
 
@@ -104,20 +120,24 @@ public class CheckTypeCompatibilityTest {
     @DisplayName("Select Join Where Statement")
     class SelectJoinWhereStatementTest {
         @Test
-        void test() throws TypeCompatibilityCheckException {
+        void testN1() throws TypeCompatibilityCheckException {
             var stmt = config.getMappedStatement("db.WrongType.SelectJoinStatement");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
         @Test
-        void test1() throws TypeCompatibilityCheckException {
+        void testP1() throws TypeCompatibilityCheckException {
             var stmt = config.getMappedStatement("db.WrongType.WrongSelectStatement1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 2);
+            logger.info("TP: {}, FP: {}", 2, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
         }
     }
 
@@ -125,20 +145,25 @@ public class CheckTypeCompatibilityTest {
     @DisplayName("Select Union Statement")
     class SelectUnionStatementTest {
         @Test
-        void test() throws TypeCompatibilityCheckException {
+        void testN1() throws TypeCompatibilityCheckException {
             var stmt = config.getMappedStatement("db.WrongType.SelectUnionStatement1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
         @Test
-        void test1() throws TypeCompatibilityCheckException {
+        void testP1() throws TypeCompatibilityCheckException {
             var stmt = config.getMappedStatement("db.WrongType.WrongSelectUnionStatement1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 2);
+
+            logger.info("TP: {}, FP: {}", 2, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
         }
     }
 
@@ -146,20 +171,24 @@ public class CheckTypeCompatibilityTest {
     @DisplayName("Select Into Statement")
     class SelectIntoStatementTest {
         @Test
-        void test() throws TypeCompatibilityCheckException {
+        void testN1() throws TypeCompatibilityCheckException {
             var stmt = config.getMappedStatement("db.WrongType.SelectIntoStatement1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
         @Test
-        void test1() throws TypeCompatibilityCheckException {
+        void testP1() throws TypeCompatibilityCheckException {
             var stmt = config.getMappedStatement("db.WrongType.WrongSelectIntoStatement1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 1);
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
         }
     }
 
@@ -168,28 +197,34 @@ public class CheckTypeCompatibilityTest {
     @DisplayName("Update Statement")
     class UpdateStatementTest {
         @Test
-        void test() throws TypeCompatibilityCheckException {
+        void testN1() throws TypeCompatibilityCheckException {
             var stmt = config.getMappedStatement("db.WrongType.updateContent1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
         @Test
-        void test1() throws TypeCompatibilityCheckException {
+        void testP1() throws TypeCompatibilityCheckException {
             var stmt = config.getMappedStatement("db.WrongType.wrongUpdateContent1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 1);
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
         }
         @Test
-        void test2() throws TypeCompatibilityCheckException {
+        void testP2() throws TypeCompatibilityCheckException {
             var stmt = config.getMappedStatement("db.WrongType.wrongUpdateContent2");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 1);
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
         }
     }
 
@@ -199,24 +234,26 @@ public class CheckTypeCompatibilityTest {
     @DisplayName("Delete Statement")
     class DeleteStatementTest {
         @Test
-        void test() throws TypeCompatibilityCheckException {
+        void testN1() throws TypeCompatibilityCheckException {
             var stmt = config.getMappedStatement("db.WrongType.deleteContent");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
         @Test
-        void test1() throws TypeCompatibilityCheckException {
+        void testP1() throws TypeCompatibilityCheckException {
             var stmt = config.getMappedStatement("db.WrongType.wrongDeleteContent1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 1);
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
         }
     }
-
-
 
 
 //
@@ -228,7 +265,7 @@ public class CheckTypeCompatibilityTest {
 //            var stmt = config.getMappedStatement("db.WrongType.select1");
 //            var diag = new MapperStatementDiagnostics();
 //            var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-//            logger.info(result.toString());
+//
 //            Assertions.assertEquals(resul.build().getErrorList()t.size(), 0);
 //        }
 //
@@ -237,7 +274,7 @@ public class CheckTypeCompatibilityTest {
 //            var stmt = config.getMappedStatement("db.WrongType.select2");
 //            var diag = new MapperStatementDiagnostics();
 //            var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-//            logger.info(result.toString());
+//
 //            Assertions.assertEquals(resul.build().getErrorList()t.size(), 1);
 //        }
 //
@@ -246,7 +283,7 @@ public class CheckTypeCompatibilityTest {
 //            var stmt = config.getMappedStatement("db.WrongType.select3");
 //            var diag = new MapperStatementDiagnostics();
 //            var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-//            logger.info(result.toString());
+//
 //            Assertions.assertEquals(resul.build().getErrorList()t.size(), 1);
 //        }
 //    }
@@ -258,7 +295,7 @@ public class CheckTypeCompatibilityTest {
 //            var stmt = config.getMappedStatement("db.WrongType.delete1");
 //            var diag = new MapperStatementDiagnostics();
 //            var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-//            logger.info(result.toString());
+//
 //            Assertions.assertEquals(resul.build().getErrorList()t.size(), 0);
 //        }
 //
@@ -267,7 +304,7 @@ public class CheckTypeCompatibilityTest {
 //            var stmt = config.getMappedStatement("db.WrongType.delete2");
 //            var diag = new MapperStatementDiagnostics();
 //            var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-//            logger.info(result.toString());
+//
 //            Assertions.assertEquals(resul.build().getErrorList()t.size(), 1);
 //        }
 //        @Test
@@ -275,7 +312,7 @@ public class CheckTypeCompatibilityTest {
 //            var stmt = config.getMappedStatement("db.WrongType.delete3");
 //            var diag = new MapperStatementDiagnostics();
 //            var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-//            logger.info(result.toString());
+//
 //            Assertions.assertEquals(resul.build().getErrorList()t.size(), 2);
 //        }
 //    }
@@ -287,7 +324,7 @@ public class CheckTypeCompatibilityTest {
 //            var stmt = config.getMappedStatement("db.WrongType.update1");
 //            var diag = new MapperStatementDiagnostics();
 //            var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-//            logger.info(result.toString());
+//
 //            Assertions.assertEquals(resul.build().getErrorList()t.size(), 0);
 //        }
 //
@@ -296,7 +333,7 @@ public class CheckTypeCompatibilityTest {
 //            var stmt = config.getMappedStatement("db.WrongType.update2");
 //            var diag = new MapperStatementDiagnostics();
 //            var result = diag.checkTypeCompatibility(stmt, new GroupEvent(new Context<>(new DiagnosticSource(DiagnosticType.MapperStatement), stmt)));
-//            logger.info(result.toString());
+//
 //            Assertions.assertEquals(resul.build().getErrorList()t.size(), 3);
 //        }
 //    }
