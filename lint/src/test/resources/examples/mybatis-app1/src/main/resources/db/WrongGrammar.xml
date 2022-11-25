@@ -301,7 +301,7 @@
     </update>
 
     <update id="wrongUpdateContent3" parameterType="model.Content">
-        update Content set content = #{content}
+        updatee Content set content = #{content}
         wheree id = #{id}
     </update>
 

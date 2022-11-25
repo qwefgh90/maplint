@@ -55,78 +55,94 @@ public class CheckTypeExistenceTest {
     @DisplayName("Various forms")
     class VariousFormTest {
         @Test
-        void test() {
+        void testN1() {
             var stmt = config.getMappedStatement("db.WrongPropertyName.form");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeExistence(stmt);
-            logger.info(result.toString());
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
 
-
         @Test
-        void test1() {
+        void testP1() {
             var stmt = config.getMappedStatement("db.WrongPropertyName.form1");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeExistence(stmt);
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 2);
+            logger.info("TP: {}, FP: {}", 2, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
         }
         @Test
-        void test2() {
+        void testP2() {
             var stmt = config.getMappedStatement("db.WrongPropertyName.form2");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeExistence(stmt);
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
         @Test
-        void test3() {
+        void testP3() {
             var stmt = config.getMappedStatement("db.WrongPropertyName.form3");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeExistence(stmt);
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
         @Test
-        void test4() {
+        void testP4() {
             var stmt = config.getMappedStatement("db.WrongPropertyName.form4");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeExistence(stmt);
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
         @Test
-        void test5() {
+        void testP5() {
             var stmt = config.getMappedStatement("db.WrongPropertyName.form5");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeExistence(stmt);
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
         @Test
-        void test6() {
+        void testP6() {
             var stmt = config.getMappedStatement("db.WrongPropertyName.form6");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeExistence(stmt);
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 1);
+            logger.info("TP: {}, FP: {}", 1, 0);
+            logger.info("TN: {}, FN: {}", 0, 0);
         }
         @Test
-        void test7() {
+        void testP7() {
             var stmt = config.getMappedStatement("db.WrongPropertyName.form7");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeExistence(stmt);
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
         @Test
-        void test8() {
+        void testP8() {
             var stmt = config.getMappedStatement("db.WrongPropertyName.form8");
             var diag = new MapperStatementDiagnostics();
             var result = diag.checkTypeExistence(stmt);
-            logger.info(result.toString());
+
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
+            logger.info("TP: {}, FP: {}", 0, 0);
+            logger.info("TN: {}, FN: {}", 1, 0);
         }
     }
 
@@ -139,7 +155,7 @@ public class CheckTypeExistenceTest {
 //            var stmt = config.getMappedStatement("db.WrongPropertyName.insert1");
 //            var diag = new MapperStatementDiagnostics();
 //            var result = diag.checkTypeExistence(stmt);
-//            logger.info(result.toString());
+//
 //            Assertions.assertEquals(result.build().getErrorList().size(), 2);
 //        }
 //    }
@@ -153,7 +169,7 @@ public class CheckTypeExistenceTest {
 //            var stmt = config.getMappedStatement("db.WrongPropertyName.select1");
 //            var diag = new MapperStatementDiagnostics();
 //            var result = diag.checkTypeExistence(stmt);
-//            logger.info(result.toString());
+//
 //            Assertions.assertEquals(result.build().getErrorList().size(), 0);
 //        }
 //
@@ -162,7 +178,7 @@ public class CheckTypeExistenceTest {
 //            var stmt = config.getMappedStatement("db.WrongPropertyName.select2");
 //            var diag = new MapperStatementDiagnostics();
 //            var result = diag.checkTypeExistence(stmt);
-//            logger.info(result.toString());
+//
 //            Assertions.assertEquals(result.build().getErrorList().size(), 0);
 //        }
 //
@@ -171,7 +187,7 @@ public class CheckTypeExistenceTest {
 //            var stmt = config.getMappedStatement("db.WrongPropertyName.select3");
 //            var diag = new MapperStatementDiagnostics();
 //            var result = diag.checkTypeExistence(stmt);
-//            logger.info(result.toString());
+//
 //            Assertions.assertEquals(result.build().getErrorList().size(), 3);
 //        }
 //
@@ -180,7 +196,7 @@ public class CheckTypeExistenceTest {
 //            var stmt = config.getMappedStatement("db.WrongPropertyName.select4");
 //            var diag = new MapperStatementDiagnostics();
 //            var result = diag.checkTypeExistence(stmt);
-//            logger.info(result.toString());
+//
 //            Assertions.assertEquals(result.build().getErrorList().size(), 3);
 //        }
 //    }
@@ -192,7 +208,7 @@ public class CheckTypeExistenceTest {
 //            var stmt = config.getMappedStatement("db.WrongPropertyName.delete1");
 //            var diag = new MapperStatementDiagnostics();
 //            var result = diag.checkTypeExistence(stmt);
-//            logger.info(result.toString());
+//
 //            Assertions.assertEquals(result.build().getErrorList().size(), 0);
 //        }
 //        @Test
@@ -200,7 +216,7 @@ public class CheckTypeExistenceTest {
 //            var stmt = config.getMappedStatement("db.WrongPropertyName.delete2");
 //            var diag = new MapperStatementDiagnostics();
 //            var result = diag.checkTypeExistence(stmt);
-//            logger.info(result.toString());
+//
 //            Assertions.assertEquals(result.build().getErrorList().size(), 1);
 //        }
 //    }
@@ -212,7 +228,7 @@ public class CheckTypeExistenceTest {
 //            var stmt = config.getMappedStatement("db.WrongPropertyName.update1");
 //            var diag = new MapperStatementDiagnostics();
 //            var result = diag.checkTypeExistence(stmt);
-//            logger.info(result.toString());
+//
 //            Assertions.assertEquals(result.build().getErrorList().size(), 0);
 //        }
 //        @Test
@@ -220,7 +236,7 @@ public class CheckTypeExistenceTest {
 //            var stmt = config.getMappedStatement("db.WrongPropertyName.update2");
 //            var diag = new MapperStatementDiagnostics();
 //            var result = diag.checkTypeExistence(stmt);
-//            logger.info(result.toString());
+//
 //            Assertions.assertEquals(result.build().getErrorList().size(), 2);
 //        }
 //    }
