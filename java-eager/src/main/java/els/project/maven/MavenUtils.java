@@ -37,13 +37,12 @@ import org.slf4j.LoggerFactory;
 public class MavenUtils {
     protected static Logger logger = LoggerFactory.getLogger(MavenUtils.class);
 
-    public static Set<Artifact> dependencies(Path workspace, Path projectPath) throws ModelBuildingException {
+    public static Set<Artifact> dependencies(Path projectPath) throws ModelBuildingException {
         File projectPomFile = projectPath.resolve("pom.xml").toAbsolutePath().toFile();
 
-        var repositoryRoot = lookupLocalRepoDir().toPath();//workspace.resolve("local");
-        logger.info("loading this sample project's Maven descriptor from {}\n", projectPomFile);
-        logger.debug("local Maven repository set to {}\n",
-                repositoryRoot);
+        var repositoryRoot = lookupLocalRepoDir().toPath();
+        logger.info("Loading this project's Maven descriptor from {}", projectPomFile);
+        logger.debug("Local Maven repository set to {}", repositoryRoot);
 
         RepositorySystem repositorySystem = getRepositorySystem();
         RepositorySystemSession repositorySystemSession = getRepositorySystemSession(repositorySystem, repositoryRoot);
@@ -55,10 +54,10 @@ public class MavenUtils {
         ModelBuildingResult modelBuildingResult = modelBuilder.build(modelBuildingRequest);
 
         Model model = modelBuildingResult.getEffectiveModel();
-        logger.debug("Maven model resolved: {}, parsing its dependencies..\n", model);
+        logger.debug("Maven model resolved: {}, parsing its dependencies..", model);
         Set<Artifact> resolvedArtifacts = new HashSet<>();
         model.getDependencies().forEach((d) -> {
-            logger.info("Processing a dependency: {}\n", d);
+            logger.info("Processing a dependency: {}", d);
             try {
                 Artifact artifact = new DefaultArtifact(d.getGroupId(), d.getArtifactId(), d.getType(), d.getVersion());
                 var resolvedArtifact = resolveArtifact(repositorySystem, repositorySystemSession, artifact);
@@ -73,7 +72,7 @@ public class MavenUtils {
                             resolvedArtifacts.add(resolvedArtifact);
                             logger.info("{} -> {}", resolvedArtifact, resolvedArtifact.getFile());
                         } catch (ArtifactResolutionException e) {
-                            logger.error("error resolving artifact: {}\n", e.getMessage());
+                            logger.error("error resolving artifact: {}", e.getMessage());
                         }
                         return true;
                     }
@@ -83,7 +82,7 @@ public class MavenUtils {
                     }
                 });
             } catch (ArtifactResolutionException | DependencyCollectionException e) {
-                logger.error("error resolving artifact: {}\n", e.getMessage());
+                logger.error("error resolving artifact: {}", e.getMessage());
             }
         });
         return resolvedArtifacts;
@@ -108,7 +107,7 @@ public class MavenUtils {
         serviceLocator.setErrorHandler(new DefaultServiceLocator.ErrorHandler() {
             @Override
             public void serviceCreationFailed(Class<?> type, Class<?> impl, Throwable exception) {
-                logger.warn("error creating service: {}\n", exception.getMessage());
+                logger.warn("error creating service: {}", exception.getMessage());
                 exception.printStackTrace();
             }
         });
@@ -117,7 +116,8 @@ public class MavenUtils {
     }
 
     /**
-     * It traverses the dependency tree of the artifact
+     * It traverses the dependency tree of the artifact.
+     * It gets artifacts except for jar files.
      * @param repositorySystem
      * @param repositorySystemSession
      * @param artifact
