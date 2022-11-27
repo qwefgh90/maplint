@@ -76,11 +76,13 @@ public class MapperStatementDiagnostics {
             var meta = SQLAnalysisService.analyze(connection, executableSql);
             var structureMeta = SQLAnalysisService.getSymbolSet(SQLAnalysisService.parseStatement(executableSql));
             Map<Named, List<ASTNodeAccess>> map = structureMeta.getColumnNodeMap();
-            meta.getColumnExistMap().forEach((key, value) -> {
-                if (!value) {
-                    map.get(key).forEach(access -> {
-                        errorList.add(new ObjectNameNotFoundError(statement, new ObjectNameNotFoundErrorSource(key, access)));
-                    });
+            meta.getColumnExistMap().forEach((col, existenceList) -> {
+                for (var i = 0; i < existenceList.size(); i++) {
+                    if (!existenceList.get(i)) {
+                        assert map.get(col).size() == existenceList.size();
+                        var access = map.get(col).get(i);
+                        errorList.add(new ObjectNameNotFoundError(statement, new ObjectNameNotFoundErrorSource(col, access)));
+                    }
                 }
             });
         } catch (JSQLParserException | SQLException e) {

@@ -19,15 +19,24 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class CheckTypeExistenceTest {
-    Logger logger = LoggerFactory.getLogger(CheckTypeExistenceTest.class);
+    static Logger logger = LoggerFactory.getLogger(CheckTypeExistenceTest.class);
 
     static Config config;
     Connection connection;
+
+    static int STP = 0;
+    static int SFP = 0;
+    static int STN = 0;
+    static int SFN = 0;
 
     @AfterEach
     void clean() throws SQLException {
         if (connection != null)
             connection.close();
+    }
+    @AfterAll
+    static void statistics(){
+        logger.info("TP: {}, FP: {}, TN: {}, FN: {}", STP, SFP, STN, SFN);
     }
 
     @BeforeAll
@@ -62,6 +71,7 @@ public class CheckTypeExistenceTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN++;
         }
 
         @Test
@@ -73,6 +83,7 @@ public class CheckTypeExistenceTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 2);
             logger.info("TP: {}, FP: {}", 2, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP+=2;
         }
         @Test
         void testP2() {
@@ -83,6 +94,7 @@ public class CheckTypeExistenceTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN++;
         }
         @Test
         void testP3() {
@@ -93,6 +105,7 @@ public class CheckTypeExistenceTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN++;
         }
         @Test
         void testP4() {
@@ -103,6 +116,7 @@ public class CheckTypeExistenceTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN++;
         }
         @Test
         void testP5() {
@@ -113,6 +127,7 @@ public class CheckTypeExistenceTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN++;
         }
         @Test
         void testP6() {
@@ -123,6 +138,7 @@ public class CheckTypeExistenceTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 1);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
         }
         @Test
         void testP7() {
@@ -133,6 +149,7 @@ public class CheckTypeExistenceTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN+=1;
         }
         @Test
         void testP8() {
@@ -143,6 +160,7 @@ public class CheckTypeExistenceTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN++;
         }
     }
 

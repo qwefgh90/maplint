@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -22,18 +23,24 @@ import java.util.stream.Collectors;
 
 /**
  * Collect the metadata of the statement
+ * objectToNodeMap.get(A).size() == namedExistenceMap.get(A).size();
  */
 public class DatabaseMetadataCollector extends JdbcDatabaseMetaDataCapability {
     private static final Logger LOG = Logger.getLogger(DatabaseMetadataCollector.class.getName());
     protected Map<Named, NamedJDBCType> columnToTypeMap = new HashMap<>();
+    /**
+     *
+     */
     protected Map<Named, List<ASTNodeAccess>> objectToNodeMap = new HashMap<>();
+    protected Map<Named, List<Boolean>> namedExistenceMap = new HashMap<>();
 
     public DatabaseMetadataCollector(Connection connection, UnaryOperator<String> namesLookup) {
         super(connection, namesLookup, true);
     }
 
-    public Map<Named, Boolean> getExistMap(){
-        return Collections.unmodifiableMap(this.results);
+
+    public Map<Named, List<Boolean>> getExistMap(){
+        return Collections.unmodifiableMap(this.namedExistenceMap);
     }
 
     public Map<Named, List<ASTNodeAccess>> getObjectToNodeMap() {
@@ -50,6 +57,18 @@ public class DatabaseMetadataCollector extends JdbcDatabaseMetaDataCapability {
         var node = context.get(AdditionalContextKey.SimpleNode, ASTNodeAccess.class);
         objectToNodeMap.computeIfAbsent(named, (key) -> new ArrayList<>()).add(node);
         exists(named);
+    }
+
+    @Override
+    protected boolean cache(Named named, BiPredicate<Map<Named, Boolean>, Named> fn) {
+        Map<Named, Boolean> m = Collections.unmodifiableMap(results);
+        if (cacheResults) {
+            namedExistenceMap.computeIfAbsent(named, (key) -> new ArrayList<>())
+                    .add(fn.test(m, named));
+            return results.computeIfAbsent(named, k -> fn.test(m, k));
+        } else {
+            return fn.test(m, named);
+        }
     }
 
     /**

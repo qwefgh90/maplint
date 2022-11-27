@@ -76,9 +76,9 @@ public class SQLAnalysisServiceTest {
 
         var meta = SQLAnalysisService.analyze(connection, executableSql);
         logger.debug(meta.toString());
-        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Blog").setAlias("B")));
-        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Author").setAlias("A")));
-        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Content").setAlias("C")));
+        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Blog").setAlias("B")).get(0));
+        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Author").setAlias("A")).get(0));
+        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Content").setAlias("C")).get(0));
         Assertions.assertTrue(meta.getColumnExistMap().entrySet().stream()
                 .filter(e -> e.getKey().getNamedObject().equals(NamedObject.column))
                 .count() >= 2);
@@ -103,9 +103,9 @@ public class SQLAnalysisServiceTest {
 
         var meta = SQLAnalysisService.analyze(connection, executableSql);
         logger.debug(meta.toString());
-        Assertions.assertFalse(meta.exists(new Named(NamedObject.table, "Blog").setAlias("B")));
-        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Author").setAlias("A")));
-        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Content").setAlias("C")));
+        Assertions.assertFalse(meta.exists(new Named(NamedObject.table, "Blog").setAlias("B")).get(0));
+        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Author").setAlias("A")).get(0));
+        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Content").setAlias("C")).get(0));
         Assertions.assertTrue(meta.getColumnExistMap().entrySet().stream()
                 .filter(e -> e.getKey().getNamedObject().equals(NamedObject.column))
                 .count() >= 2);
@@ -137,7 +137,7 @@ public class SQLAnalysisServiceTest {
 
         var meta = SQLAnalysisService.analyze(connection, executableSql);
         logger.debug(meta.toString());
-        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Blog")));
+        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Blog")).get(0));
         Assertions.assertTrue(meta.getColumnExistMap().entrySet().stream()
                         .filter(e -> e.getKey().getNamedObject().equals(NamedObject.column))
                         .count() >= 4);
@@ -161,7 +161,7 @@ public class SQLAnalysisServiceTest {
         connection = transaction.getConnection();
         var meta = SQLAnalysisService.analyze(connection, executableSql);
         logger.debug(meta.toString());
-        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Content")));
+        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Content")).get(0));
         Assertions.assertTrue(meta.getColumnExistMap().entrySet().stream()
                 .filter(e -> e.getKey().getNamedObject().equals(NamedObject.column))
                 .count() >= 1);
@@ -186,8 +186,8 @@ public class SQLAnalysisServiceTest {
 
         var meta = SQLAnalysisService.analyze(connection, executableSql);
         logger.debug(meta.toString());
-        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Content")));
-        Assertions.assertTrue(meta.exists(new Named(NamedObject.column, "id")));
+        Assertions.assertTrue(meta.exists(new Named(NamedObject.table, "Content")).get(0));
+        Assertions.assertTrue(meta.exists(new Named(NamedObject.column, "id")).get(0));
 
         var symbolSet = SQLAnalysisService.getSymbolSet((Delete) SQLAnalysisService.parseStatement(executableSql));
         logger.debug(symbolSet.toString());

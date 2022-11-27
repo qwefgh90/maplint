@@ -25,15 +25,24 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class CheckTypeCompatibilityTest {
-    Logger logger = LoggerFactory.getLogger(CheckTypeCompatibilityTest.class);
+    static Logger logger = LoggerFactory.getLogger(CheckTypeCompatibilityTest.class);
 
     static Config config;
     Connection connection;
+
+    static int STP = 0;
+    static int SFP = 0;
+    static int STN = 0;
+    static int SFN = 0;
 
     @AfterEach
     void clean() throws SQLException {
         if(connection!= null)
             connection.close();
+    }
+    @AfterAll
+    static void statistics(){
+        logger.info("TP: {}, FP: {}, TN: {}, FN: {}", STP, SFP, STN, SFN);
     }
 
     @BeforeAll
@@ -68,6 +77,7 @@ public class CheckTypeCompatibilityTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN++;
         }
 
         @Test
@@ -78,6 +88,7 @@ public class CheckTypeCompatibilityTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 1);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
         }
     }
 
@@ -93,6 +104,7 @@ public class CheckTypeCompatibilityTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN++;
         }
 
         @Test
@@ -112,6 +124,9 @@ public class CheckTypeCompatibilityTest {
                 fnCount++;
             logger.info("TP: {}, FP: {}", tpCount, result.build().getErrorList().size() - tpCount);
             logger.info("TN: {}, FN: {}", 0, fnCount);
+            STP += tpCount;
+            SFP += result.build().getErrorList().size() - tpCount;
+            SFN += fnCount;
             Assertions.assertEquals(1, result.build().getErrorList().size());
         }
     }
@@ -128,6 +143,7 @@ public class CheckTypeCompatibilityTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN++;
         }
         @Test
         void testP1() throws TypeCompatibilityCheckException {
@@ -138,6 +154,7 @@ public class CheckTypeCompatibilityTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 2);
             logger.info("TP: {}, FP: {}", 2, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP+=2;
         }
     }
 
@@ -153,6 +170,7 @@ public class CheckTypeCompatibilityTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN++;
         }
         @Test
         void testP1() throws TypeCompatibilityCheckException {
@@ -164,6 +182,7 @@ public class CheckTypeCompatibilityTest {
 
             logger.info("TP: {}, FP: {}", 2, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP+=2;
         }
     }
 
@@ -179,6 +198,7 @@ public class CheckTypeCompatibilityTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN++;
         }
         @Test
         void testP1() throws TypeCompatibilityCheckException {
@@ -189,6 +209,7 @@ public class CheckTypeCompatibilityTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 1);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP+=1;
         }
     }
 
@@ -205,6 +226,7 @@ public class CheckTypeCompatibilityTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN+=1;
         }
         @Test
         void testP1() throws TypeCompatibilityCheckException {
@@ -215,6 +237,7 @@ public class CheckTypeCompatibilityTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 1);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP+=1;
         }
         @Test
         void testP2() throws TypeCompatibilityCheckException {
@@ -225,6 +248,7 @@ public class CheckTypeCompatibilityTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 1);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP+=1;
         }
     }
 
@@ -242,6 +266,7 @@ public class CheckTypeCompatibilityTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 0);
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN++;
         }
         @Test
         void testP1() throws TypeCompatibilityCheckException {
@@ -252,6 +277,7 @@ public class CheckTypeCompatibilityTest {
             Assertions.assertEquals(result.build().getErrorList().size(), 1);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP+=1;
         }
     }
 

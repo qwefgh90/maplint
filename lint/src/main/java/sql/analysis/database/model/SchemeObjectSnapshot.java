@@ -3,6 +3,7 @@ package sql.analysis.database.model;
 import net.sf.jsqlparser.util.validation.metadata.Named;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -10,19 +11,19 @@ import java.util.stream.Collectors;
  * @author qwefgh90
  */
 public class SchemeObjectSnapshot {
-    public SchemeObjectSnapshot(Map<Named, NamedJDBCType> columnToTypeMap, Map<Named, Boolean> results) {
+    public SchemeObjectSnapshot(Map<Named, NamedJDBCType> columnToTypeMap, Map<Named, List<Boolean>> results) {
         this.columnToTypeMap = columnToTypeMap;
         this.columnExistMap = results;
     }
 
     protected Map<Named, NamedJDBCType> columnToTypeMap;
-    protected Map<Named, Boolean> columnExistMap;
+    protected Map<Named, List<Boolean>> columnExistMap;
 
     /**
      * The fqn value equals to the literal in the SQL statement
      * @return
      */
-    public Map<Named, Boolean> getColumnExistMap(){
+    public Map<Named, List<Boolean>> getColumnExistMap(){
         return Collections.unmodifiableMap(this.columnExistMap);
     }
     public Map<Named, NamedJDBCType> getColumnToTypeMap() {
@@ -43,8 +44,8 @@ public class SchemeObjectSnapshot {
      * @param named
      * @return
      */
-    public Boolean exists(Named named){
-        return columnExistMap.getOrDefault(named, false);
+    public List<Boolean> exists(Named named){
+        return columnExistMap.getOrDefault(named, List.of(false));
     }
 
     @Override

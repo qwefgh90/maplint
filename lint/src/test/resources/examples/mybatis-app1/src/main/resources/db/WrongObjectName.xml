@@ -195,13 +195,13 @@
 
     <select id="WrongSelectUnionStatement1" parameterType="int" resultMap="blogResult">
         select B.id as id, B.blog_name as blog_name,
-        B.description,
-        B.create_time as create_time,
-        A.id as author_id,
-        A.name as author_name,
+<!--        B.description,-->
+<!--        B.create_time as create_time,-->
+<!--        A.id as author_id,-->
+<!--        A.name as author_name,-->
         C.id as content_id,
         C.blog_id as content_blog_id,
-        C.content as content_content,
+<!--        C.content as content_content,-->
         C.create_time as content_create_time,
         A.id as content_author_id,
         A.name as content_author_name
@@ -211,13 +211,13 @@
         where B.author_id = '?' + #{id}
         UNION ALL
         select B.id as id, B.blog_name as blog_name,
-        B.description,
-        B.create_time as create_time,
-        A.id as author_id,
-        A.name as author_name,
+<!--        B.description,-->
+<!--        B.create_time as create_time,-->
+<!--        A.id as author_id,-->
+<!--        A.name as author_name,-->
         C.id as content_id,
         C.blog_id as content_blog_id,
-        C.content as content_content,
+<!--        C.content as content_content,-->
         C.create_time as content_create_time,
         A.id as content_author_id,
         A.name as content_author_name

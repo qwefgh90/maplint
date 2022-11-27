@@ -18,15 +18,25 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class CheckGrammarTest {
-    Logger logger = LoggerFactory.getLogger(CheckGrammarTest.class);
+    static Logger logger = LoggerFactory.getLogger(CheckGrammarTest.class);
 
     static Config config;
     Connection connection;
+
+    static int STP = 0;
+    static int SFP = 0;
+    static int STN = 0;
+    static int SFN = 0;
 
     @AfterEach
     void clean() throws SQLException {
         if(connection!= null)
             connection.close();
+    }
+
+    @AfterAll
+    static void statistics(){
+        logger.info("TP: {}, FP: {}, TN: {}, FN: {}", STP, SFP, STN, SFN);
     }
 
     @BeforeAll
@@ -59,6 +69,7 @@ public class CheckGrammarTest {
 
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN++;
         }
         @Test
         void testP1() {
@@ -68,6 +79,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
 
@@ -80,6 +92,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
 
@@ -91,6 +104,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
 
@@ -102,6 +116,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
     }
@@ -117,6 +132,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().isEmpty());
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN++;
         }
 
         @Test
@@ -127,6 +143,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
 
@@ -138,6 +155,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
 
@@ -149,6 +167,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
 
@@ -160,6 +179,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
 
@@ -171,6 +191,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
     }
@@ -186,6 +207,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().isEmpty());
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN++;
         }
         @Test
         void testP1() {
@@ -195,6 +217,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
         @Test
@@ -205,6 +228,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
         @Test
@@ -215,6 +239,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
         @Test
@@ -225,6 +250,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
         @Test
@@ -235,6 +261,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
         @Test
@@ -245,6 +272,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
     }
@@ -260,6 +288,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().isEmpty());
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN++;
         }
         @Test
         void testP1() {
@@ -269,6 +298,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
     }
@@ -283,6 +313,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().isEmpty());
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN++;
         }
         @Test
         void testP1() {
@@ -292,6 +323,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
     }
@@ -306,6 +338,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().isEmpty());
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN++;
         }
         @Test
         void testP1() {
@@ -315,6 +348,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
         @Test
@@ -325,6 +359,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
         @Test
@@ -335,6 +370,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
     }
@@ -350,6 +386,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().isEmpty());
             logger.info("TP: {}, FP: {}", 0, 0);
             logger.info("TN: {}, FN: {}", 1, 0);
+            STN++;
         }
         @Test
         void testP1() {
@@ -359,6 +396,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
         @Test
@@ -369,6 +407,7 @@ public class CheckGrammarTest {
             Assertions.assertTrue(result.build().getErrorList().size() > 0);
             logger.info("TP: {}, FP: {}", 1, 0);
             logger.info("TN: {}, FN: {}", 0, 0);
+            STP++;
 
         }
     }
