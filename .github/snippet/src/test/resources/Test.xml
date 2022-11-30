@@ -11,7 +11,8 @@
         values (#{name})
     </insert>
 
-    <insert   id="insertBlog" parameterType="model.Blog" useGeneratedKeys="true"
+    <insert   id="insertBlog" parameterType="mo
+    del.Blog" useGeneratedKeys="true"
             keyProperty="id">
         insert into Blog (author_id, blog_name, description, create_time)
         values (#{author.id}
