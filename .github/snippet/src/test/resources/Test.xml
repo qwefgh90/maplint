@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="db.BlogMapper">
+    <insert   id =  "insertAuthor" parameterType="model.Author"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        <![CDATA[글씨를 굵은 글씨로 강조한다. <b>...</b> 태그를 사용한다. <b> 대신 <strong>을 사용해도 된다.]]>
+        insert into Author(name)
+        values (#{name})
+    </insert>
+
+    <insert   id="insertBlog" parameterType="model.Blog" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into Blog (author_id, blog_name, description, create_time)
+        values (#{author.id}
+        , #{blogName}
+        , #{description}
+        , #{createTime})
+    </insert>
+
+    <select id="selectAuthor" resultType="model.Author">
+        select id, name from Author
+
+    </select>
+        <select id="selectBlog" resultMap="blogResult">
+        select B.id as id, B.blog_name as blog_name,
+        B.description,
+        B.create_time as create_time,
+        A.id as author_id,
+        A.name as author_name,
+        C.id as content_id,
+        C.content as content_content,
+        C.create_time as content_create_time
+        from Blog as B
+        left join Author as A on B.author_id = A.id
+        left join Content as C on B.id = C.blog_id
+    </select>
+
+    <select id="selectBlogByAuthor" parameterType="int" resultMap="blogResult">
+        select B.id as id, B.blog_name as blog_name,
+        B.description,
+        B.create_time as create_time,
+        A.id as author_id,
+        A.name as author_name,
+        C.id as content_id,
+        C.blog_id as content_blog_id,
+        C.content as content_content,
+        C.create_time as content_create_time,
+        A.id as content_author_id,
+        A.name as content_author_name
+        from Blog as B
+        left join Author as A on B.author_id = A.id
+        left join Content as C on B.id = C.blog_id
+        where B.author_id = #{id}
+    </select>
+
+    <select id="selectContentByBlog" parameterType="int" resultMap="contentResult">
+        select C.id as id,
+        C.blog_id,
+        C.content,
+        C.create_time,
+        A.id as author_id,
+        A.name as author_name
+        from Content as C
+        left join Author as A on C.author_id = A.id
+        where C.blog_id = #{id}
+    </select>
+
+    <insert id="insertContent" parameterType="model.Content"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into Content (author_id, blog_id,
+        content, create_time)
+        values (#{author.id}, #{blogId}, #{content}, #{createTime})
+    </insert>
+    <delete id="deleteContent" parameterType="int">
+        delete from Content
+        where id = #{id}
+    </delete>
+    <update id="updateContent" parameterType="model.Content">
+        update Content set content = #{content}
+        where id = #{id}
+    </update>
+
+    <resultMap id="authorResult" type="model.Author">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+    </resultMap>
+
+    <resultMap id="blogResult" type="model.Blog">
+        <id property="id" column="id"/>
+        <result property="blogName" column="blog_name"/>
+        <result property="description" column="description"/>
+        <result property="createTime" column="create_time"/>
+        <association property="author" resultMap="authorResult" columnPrefix="author_"/>
+        <collection property="contents" resultMap="contentResult" columnPrefix="content_"/>
+    </resultMap>
+
+    <resultMap id="contentResult" type="model.Content">
+        <id property="id" column="id"/>
+        <result property="content" column="content"/>
+        <result property="blogId" column="blog_id"/>
+        <result property="createTime" column="create_time"/>
+        <association property="author" resultMap="authorResult" columnPrefix="author_"/>
+    </resultMap>
+
+    <update id="prepared">
+        insert into Author(name)
+        values (?) {1: STRINGDECODE('\ucc3d\uc6d0')}
+    </update>
+    <update id="createTableIfNotExist">
+        DROP TABLE IF EXISTS Author;
+        CREATE TABLE Author (
+        id int NOT NULL AUTO_INCREMENT,
+        name varchar(100) NOT NULL
+        );
+        ALTER TABLE Author ADD PRIMARY KEY (id);
+
+        DROP TABLE IF EXISTS Blog;
+        CREATE TABLE Blog (
+        id int NOT NULL AUTO_INCREMENT,
+        author_id int NOT NULL,
+        blog_name varchar(100) NOT NULL,
+        description varchar(100) NOT NULL,
+        create_time datetime NOT NULL
+        );
+        ALTER TABLE Blog ADD PRIMARY KEY (id);
+        ALTER TABLE Blog ADD FOREIGN KEY (author_id) REFERENCES Author(id);
+
+
+        DROP TABLE IF EXISTS Content;
+        CREATE TABLE Content (
+        id int NOT NULL AUTO_INCREMENT,
+        author_id int NOT NULL,
+        blog_id int NOT NULL,
+        content varchar(100) NOT NULL,
+        create_time datetime NOT NULL
+        );
+        ALTER TABLE Content ADD PRIMARY KEY (id);
+        ALTER TABLE Content ADD FOREIGN KEY (blog_id) REFERENCES Blog(id);
+        ALTER TABLE Content ADD FOREIGN KEY (author_id) REFERENCES Author(id);
+    </update>
+    <update id="createTableIfNotExistSQLite">
+        DROP TABLE IF EXISTS Author;
+        CREATE TABLE Author (
+        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        name varchar(100) NOT NULL
+        );
+
+        DROP TABLE IF EXISTS Blog;
+        CREATE TABLE Blog (
+        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        author_id INTEGER NOT NULL,
+        blog_name varchar(100) NOT NULL,
+        description varchar(100) NOT NULL,
+        create_time datetime NOT NULL,
+        FOREIGN KEY (author_id)
+        REFERENCES Author (id)
+        );
+
+
+        DROP TABLE IF EXISTS Content;
+        CREATE TABLE Content (
+        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        author_id INTEGER NOT NULL,
+        blog_id int NOT NULL,
+        content varchar(100) NOT NULL,
+        create_time datetime NOT NULL,
+        FOREIGN KEY (blog_id)
+            REFERENCES Blog (id),
+        FOREIGN KEY (author_id)
+            REFERENCES Author (id)
+        );
+    </update>
+</mapper>
