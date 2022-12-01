@@ -15,7 +15,9 @@ We support [versions](Spec.md).
 > LC = the line and column
 > The Stax parser in Jaxp provides the location for only elements.
 > So, we calculate locations for others. We need the access to XML Files with the with line, column
->
+> **I think that one bug of Stax parser is to return wrong column number which is bigger than expected one 
+> when data of Character Event ends with '<', '</'.**
+> 
 > - offset = the character count from the start of element
 > - elementStartLC: It's provided from Stax Parser
 > - elementEndLC: It's provided from Stax Parser
@@ -56,7 +58,8 @@ We support [versions](Spec.md).
 >
 > ##### RawXMLMapper
 > The data structure represents XML structure and locations
-> for elements, attrs, placeholders,
+> for elements, attrs, placeholders.
+> - It has inheritance.
 >
 >
 > ```java
@@ -90,6 +93,11 @@ We support [versions](Spec.md).
 >   List<RawPlaceHolder> placeholderList;
 > }
 > ```
+> ```java
+> class RawTextElementGroup{
+>   List<RawTextElement> elements;
+> }
+>```
 >
 > ```xml
 > <mapper namespace="db.BlogMapper">
@@ -140,7 +148,7 @@ We support [versions](Spec.md).
 > #### The evaluation of the Dynamic SQL 
 >
 >
-> A new RawXMLMapper is a sql statement that parser can parse
+> A newly generated RawXMLMapper is a sql statement that parser can parse
 > by evaluating dynamic SQLs
 > and it keeps all original locations.
 > 
@@ -148,36 +156,70 @@ We support [versions](Spec.md).
 > Categories of the dynamic sql are
 > "if", "choose", "when", "otherwise", "trim", "where", "set", "foreach"
 >
-> Evaluation proceeds with Depth-First Search
+> Evaluation proceeds with **Depth-First Search**
+> - RawTextElementGroup can create many candidates.
+> - Scan old RawXMLMapper.
+> - Create old RawXMLMapper.
+> - Append _RawTextElement_ nodes that created nodes in old RawXMLMapper
 > 
 > ##### if
-> set true and append new _RawTextElement_ that is its child instead of RawIfElement 
+> 1. set true and append new _RawTextElement_ that is its child. 
 > new _RawTextElement_ has old _RawTextElement_ as parent.
+> ```xml
+> <if test="title != null">
+>     AND title like #{title}
+> </if>
+> ```
 > 
 > ##### choose, when, otherwise
 > append _RawTextElementGroup_ that has all possible _RawTextElement_ instead of RawChooseElement 
 > new _RawTextElement_ has old _RawTextElement_ as parent.
+> ```xml
+> <choose>
+>   <when test="title != null"> 
+>     AND title like #{title}
+>   </when>
+>   <when test="author != null and author.name != null">
+>     AND author_name like #{author.name}
+>   </when>
+>   <otherwise>
+>     AND featured = 1
+>   </otherwise>
+> </choose>
+> ``` 
 > 
-> ```java
-> class RawTextElementGroup{
->   List<RawTextElement> elements;
-> }
->```
+> 
 > ##### where
-> append 'where' instead of an opening tag and remove a closing tag.
-> append new _RawTextElement_ that's created from old _RawTextElement_ 
-> by removing "and | or ".
+> First, append 'where'.
+> Second, append new _RawTextElement_ that's created from old _RawTextElement_ 
+> where leading "and | or " is removed in a first _RawTextElement_.
 > new _RawTextElement_ has old _RawTextElement_ as parent.
-> 
+> ```xml
+> <where>
+>   <if test="state != null"> <!-- It will be removed --> 
+>        state = #{state}
+>   </if> <!-- It will be removed -->
+> </where>
+> ```
 > ##### trim 
 >
-> append new _RawTextElement_ that's created from old following _RawTextElement_
-> by appending "prefix" and removing "prefixOverrides" and "suffixOverrides"
-> 
+> 1. Append new _RawTextElement_ that's created from old following _RawTextElement_
+> by appending "prefix" 
+> 2. Handle "prefixOverrides" and "suffixOverrides"
+> ```xml
+> <trim prefix="WHERE" prefixOverrides="AND |OR ">
+> ...
+> </trim>
+> ```
 > ##### foreach
 >
-> append new _RawTextElement_ that has a value of "open"
-> and old _RawTextElement_ a value of "close" in order.
-> new _RawTextElement_ has old _RawForEachElement_ as parent.
-> 
+> 1.  append new _RawTextElement_ that has a value of "open" as a parent.
+> 2.  append new _RawTextElement_ that has _RawTextElement_ in text.
+> 3.  append new _RawTextElement_ that has a value of "close" as a parent.
+> ```xml
+>  <foreach item="item" index="index" collection="list"
+>    open="ID in (" separator="," close=")" nullable="true">
+>      #{item}
+>  </foreach>
+> ```
 

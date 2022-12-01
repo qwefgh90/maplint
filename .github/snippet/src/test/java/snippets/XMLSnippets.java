@@ -32,7 +32,8 @@ public class XMLSnippets {
         while (reader.hasNext()) {
             var event = reader.nextEvent();
             if(event.isStartElement()){
-                    System.out.println("isStartElement");
+                System.out.println("isStartElement");
+
             }
 //            if(reader.isAttributeSpecified(0)){
 //                    System.out.println("isAttributeSpecified");
@@ -43,7 +44,12 @@ public class XMLSnippets {
             if(event.isCharacters()){
                 System.out.println("isCharacters");
                 //TODO: modify the column number by counting characters again in a last line.
-
+            }
+            if(event.isProcessingInstruction()){
+                System.out.println("isProcessingInstruction");
+            }
+            if(event.isNamespace()){
+                System.out.println("isNamespace");
             }
             if(event.isStartDocument()){
                 System.out.println("isStartDocument");
