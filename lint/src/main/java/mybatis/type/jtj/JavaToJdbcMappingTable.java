@@ -299,7 +299,7 @@ public class JavaToJdbcMappingTable extends AbstractJavaToJdbcMappingTable {
 
     private void timeOnlyTypeHandler() {
         //TimeOnlyTypeHandler.java
-        putSetDate(Date.class.getName());
+        putSetTime(Date.class.getName());
     }
 
 //    private void unknownTypeHandler(){

@@ -62,9 +62,14 @@ public class AbstractJavaToJdbcMappingTable {
     protected void putSetString(String className) {
         putIntoJavaToJdbcMap(className, JDBCType.VARCHAR);
         putIntoJavaToJdbcMap(className, JDBCType.LONGVARCHAR);
+        //From JDBC spec 4.2
+        putIntoJavaToJdbcMap(className, JDBCType.CHAR);
+        putIntoJavaToJdbcMap(className, JDBCType.NCHAR);
+        putIntoJavaToJdbcMap(className, JDBCType.NVARCHAR);
+        putIntoJavaToJdbcMap(className, JDBCType.LONGNVARCHAR);
     }
-
     protected void putSetBytes(String className) {
+        putIntoJavaToJdbcMap(className, JDBCType.BINARY);
         putIntoJavaToJdbcMap(className, JDBCType.VARBINARY);
         putIntoJavaToJdbcMap(className, JDBCType.LONGVARBINARY);
     }
@@ -91,6 +96,7 @@ public class AbstractJavaToJdbcMappingTable {
 
     protected void putSetDate(String className) {
         putIntoJavaToJdbcMap(className, JDBCType.DATE);
+        putIntoJavaToJdbcMap(className, JDBCType.TIMESTAMP);
     }
 
     protected void putSetTime(String className) {
@@ -124,7 +130,7 @@ public class AbstractJavaToJdbcMappingTable {
     }
 
     protected void putSetObject(String className) {
-        // it will be complemented by drivers (MySQLType.java)
+        //TODO: it will be complemented by drivers (MySQLType.java)
     }
 
     protected void putSetNCharacterStream(String className) {
@@ -137,6 +143,7 @@ public class AbstractJavaToJdbcMappingTable {
 
     protected void putSetClob(String className) {
         putIntoJavaToJdbcMap(className, JDBCType.CLOB);
+        putIntoJavaToJdbcMap(className, JDBCType.LONGVARCHAR);
     }
 
     protected void putSetBlob(String className) {

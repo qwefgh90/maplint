@@ -65,6 +65,16 @@ public class MyBatisTest {
     }
 
     @Test
+    @Disabled
+    void test() {
+        author = new Author(0, "창원");
+        var authors = session.selectList("db.BlogMapper.test", 1234);
+        for (var a : authors) {
+            logger.info("A inserted row: {}", a.toString());
+        }
+    }
+
+    @Test
     @Order(1)
     void makeNewAuthor() {
         author = new Author(0, "창원");
