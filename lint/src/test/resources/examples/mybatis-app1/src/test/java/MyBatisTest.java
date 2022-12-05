@@ -68,7 +68,9 @@ public class MyBatisTest {
     @Disabled
     void test() {
         author = new Author(0, "창원");
-        var authors = session.selectList("db.BlogMapper.test", 1234);
+        var count = session.insert("db.BlogMapper.insertAuthor", author);
+        author = new Author(0, "창원");
+        var authors = session.selectList("db.BlogMapper.test", "name");
         for (var a : authors) {
             logger.info("A inserted row: {}", a.toString());
         }

@@ -3,9 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="db.BlogMapper">
-    <select id="test" parameterType="_int" resultType="model.Author">
-        select id, name from #{id}
+    <select id="test" parameterType="string" resultType="map">
+        select  <include refid="zzz"></include> as hey, name
+        from Author order by #{aaa}
     </select>
+
+    <sql id="zzz">'1${id}1'</sql>
 
     <insert id="insertAuthor" parameterType="model.Author"
             useGeneratedKeys="true"
