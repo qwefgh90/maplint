@@ -7,11 +7,11 @@ We support [versions](Spec.md).
 
 ### XML Parsing
 
-> #### The parser prints XML validation.
+> ### The parser checks XML validation.
 >
 > It prints xml errors.
 
-> #### The parser provides start LC and end LC where tags, attributes and texts starts and ends in XML file.
+> ### The parser provides start LC and end LC where tags, attributes and texts starts and ends in XML file.
 > LC = the line and column
 > The Stax parser in Jaxp provides the location for only elements.
 > So, we calculate locations for others. We need the access to XML Files with the with line, column
@@ -54,7 +54,7 @@ We support [versions](Spec.md).
 >
 >https://www.javarticles.com/2015/12/jaxp-stax-stream-reader-example.html
 
-> #### Data Structures for the Mapper
+> ### Data Structures for the Mapper
 >
 > ##### RawXMLMapper
 > The data structure represents XML structure and locations
@@ -143,9 +143,9 @@ We support [versions](Spec.md).
 > }
 > ```
 
-### Parse Mapped Statement
+### Convert Mapped Statement into String
 
-> #### The evaluation of the Dynamic SQL 
+> ### The evaluation of the Dynamic SQL 
 >
 >
 > A newly generated RawXMLMapper is a sql statement that parser can parse
@@ -222,4 +222,36 @@ We support [versions](Spec.md).
 >      #{item}
 >  </foreach>
 > ```
+
+### Parse SQL Statement
+
+- The parser accepts placeholders.
+- The parser prints the syntax error and its range.
+
+### Object Name Check
+
+- AST contains locations for tables, columns
+- It answers following questions. 
+  - If the table exists? 
+  - If the column exists?
+
+> ### retrieving metadata from the database
+> JDBC getMetadata() is useful.
+
+### Property Name Check
+
+- It answers following questions. 
+    - If the property is valid?
+    - If the type is valid?
+
+> ### Read all types from Java project
+
+
+### Type Incompatibility Check
+
+- It checks type incompatibility between column and java type.
+
+> ### Build the table for the mapping of column and java type.
+> Based on standard docs (JDBC Document)
+
 
