@@ -75,6 +75,11 @@ public class MyBatisTest {
             logger.info("A inserted row: {}", a.toString());
         }
     }
+    @Test
+    void getLog() {
+        var count = session.selectList("db.BlogMapper.getLog", "tent");
+        logger.info("list: {}", count);
+    }
 
     @Test
     @Order(1)

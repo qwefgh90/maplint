@@ -17,6 +17,15 @@
         values (#{name})
     </insert>
 
+    <select id="getLog"
+            parameterType="string" resultType="map">
+        select id,
+        blog_id,
+        content,
+        create_time
+        from Con${param}
+    </select>
+
     <insert id="insertBlog" parameterType="model.Blog" useGeneratedKeys="true"
             keyProperty="id">
         insert into Blog (author_id, blog_name, description, create_time)
@@ -30,7 +39,7 @@
         select id, name from Author
     </select>
 
-        <select id="selectBlog" resultMap="blogResult">
+    <select id="selectBlog" resultMap="blogResult">
         select B.id as id, B.blog_name as blog_name,
         B.description,
         B.create_time as create_time,
