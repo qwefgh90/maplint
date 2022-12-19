@@ -4,9 +4,33 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="db.BlogMapper">
     <select id="test" parameterType="string" resultType="map">
-        select  <include refid="zzz"></include> as hey, name
-        from Author order by #{aaa}
+        select name
+        from #{tableName} order by name
     </select>
+<!--    @java.lang.Integer@parseInt(_parameter.get("year")) lte @java.lang.Integer@MAX_VALUE-->
+    <select id="getReport" parameterType="map" resultType="map">
+      select summary, created_date from
+      <if test='@java.util.regex.Pattern@compile("\\d\\d\\d\\d").matcher(_parameter.get("year")).matches()'>
+          <if test='_parameter.get("month") in @sqli.Global@list()'>
+              Report_${year}_${month}
+          </if>
+<!--        <choose>-->
+<!--          <when test="month = 'JAN'">Report_${year}_${month}</when>-->
+<!--          <when test="month = 'FEB'">Report_${year}_${month}</when>-->
+<!--          <when test="month = 'MAR'">Report_${year}_${month}</when>-->
+<!--          <when test="month = 'APR'">Report_${year}_${month}</when>-->
+<!--          <when test="month = 'MAY'">Report_${year}_${month}</when>-->
+<!--          <when test="month = 'JUN'">Report_${year}_${month}</when>-->
+<!--          <when test="month = 'JUL'">Report_${year}_${month}</when>-->
+<!--          <when test="month = 'AUG'">Report_${year}_${month}</when>-->
+<!--          <when test="month = 'SEP'">Report_${year}_${month}</when>-->
+<!--          <when test="month = 'OCT'">Report_${year}_${month}</when>-->
+<!--          <when test="month = 'NOV'">Report_${year}_${month}</when>-->
+<!--          <when test="month = 'DEC'">Report_${year}_${month}</when>-->
+<!--        </choose>-->
+      </if>
+    </select>
+
 
     <sql id="zzz">'1${id}1'</sql>
 
@@ -23,9 +47,9 @@
         blog_id,
         content,
         create_time
-        from Con${param}
+        from <if test='@MyUtil@isOneOf(_parameter)'>Con${param}</if>
     </select>
-
+<!--    @MyUtil@isOneOf(_parameter)-->
     <insert id="insertBlog" parameterType="model.Blog" useGeneratedKeys="true"
             keyProperty="id">
         insert into Blog (author_id, blog_name, description, create_time)

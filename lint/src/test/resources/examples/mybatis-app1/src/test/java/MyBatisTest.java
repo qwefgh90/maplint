@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * !Important
@@ -65,18 +66,22 @@ public class MyBatisTest {
     }
 
     @Test
-    @Disabled
     void test() {
-        author = new Author(0, "창원");
-        var count = session.insert("db.BlogMapper.insertAuthor", author);
-        author = new Author(0, "창원");
-        var authors = session.selectList("db.BlogMapper.test", "name");
+        var authors = session.selectList("db.BlogMapper.test", "Author");
+        for (var a : authors) {
+            logger.info("A inserted row: {}", a.toString());
+        }
+    }
+    @Test
+    void test2() {
+        var authors = session.selectList("db.BlogMapper.getReport", Map.of("year","1234", "month", "OCT"));
         for (var a : authors) {
             logger.info("A inserted row: {}", a.toString());
         }
     }
     @Test
     void getLog() {
+
         var count = session.selectList("db.BlogMapper.getLog", "tent");
         logger.info("list: {}", count);
     }
