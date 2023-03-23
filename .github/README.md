@@ -1,5 +1,7 @@
 ## Maplint
 
+:warning: Any updates might be delayed until the Java static analyzer project is complete in another repository.
+
 **Maplint** is a lint program to check errors in Mapped SQL Statement.
 It's being developed based on a recent paper that introduces four analysis methods 
 for finding out various errors in statements. Main concepts are 
